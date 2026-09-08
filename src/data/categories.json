@@ -1,0 +1,124 @@
+[
+  {
+    "id": "monev-rehab-1",
+    "name": "Monev Revitalisasi SMP Tahap 1 (2024)",
+    "description": "Pemantauan progres fisik dan administrasi untuk sekolah yang menerima bantuan revitalisasi tahap pertama tahun anggaran 2024.",
+    "icon": "Layers",
+    "stats": {
+      "totalSchools": 1250,
+      "completedSurveys": 850,
+      "pendingSurveys": 400,
+      "issuesReported": 24
+    },
+    "menuOptions": [
+      "01 - Rehabilitasi ruang kelas dengan tingkat kerusakan minimal sedang beserta perabotnya",
+      "02 - Rehabilitasi ruang perpustakaan dengan tingkat kerusakan minimal sedang beserta perabotnya",
+      "03 - Rehabilitasi ruang laboratorium IPA dengan tingkat kerusakan minimal sedang beserta perabotnya",
+      "03 - Rehabilitasi ruang laboratorium TIK dengan tingkat kerusakan minimal sedang beserta perabotnya",
+      "04 - Rehabilitasi ruang Administrasi dengan tingkat kerusakan minimal sedang beserta perabotnya",
+      "05 - Rehabilitasi ruang ibadah dengan tingkat kerusakan minimal sedang",
+      "06 - Rehabilitasi ruang UKS dengan tingkat kerusakan minimal sedang beserta perabotnya",
+      "07 - Rehabilitasi toilet dengan tingkat kerusakan minimal sedang beserta sanitasinya",
+      "08 - Rehabilitasi rumah dinas guru dengan tingkat kerusakan minimal sedang beserta perabotnya",
+      "09 - Pembangunan ruang kelas baru (RKB) beserta perabotnya",
+      "10 - Pembangunan ruang perpustakaan beserta perabotnya",
+      "11 - Pembangunan ruang laboratorium IPA beserta perabotnya",
+      "11 - Pembangunan ruang laboratorium TIK beserta perabotnya",
+      "12 - Pembangunan toilet beserta sanitasinya",
+      "14 - Pembangunan ruang Administrasi beserta perabotnya",
+      "15 - Pembangunan ruang UKS beserta perabotnya",
+      "16 - Pembangunan rumah dinas guru beserta perabotnya",
+      "18 - Penataan lingkungan"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "label": "Status Progres Fisik Bangunan Saat Ini",
+        "type": "select",
+        "options": ["0% - 25% (Persiapan/Fondasi)", "26% - 50% (Struktur Utama)", "51% - 75% (Atap & Dinding)", "76% - 100% (Finishing & Selesai)"],
+        "required": true
+      },
+      {
+        "id": "q2",
+        "label": "Apakah material bangunan sudah sesuai spesifikasi RAB (Rencana Anggaran Biaya)?",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "id": "q3",
+        "label": "Apakah terdapat deviasi jadwal keterlambatan proyek?",
+        "type": "boolean",
+        "required": true,
+        "config": {
+          "cascading": {
+            "yes": {
+              "type": "essay",
+              "label": "Jelaskan penyebab deviasi dan rencana penanganannya:",
+              "required": true
+            }
+          }
+        }
+      },
+      {
+        "id": "q4",
+        "label": "Jumlah tenaga kerja harian yang aktif di lokasi proyek",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "q_nilai_kontrak",
+        "label": "Nilai Kontrak Proyek (Rp)",
+        "type": "number",
+        "required": true,
+        "config": { "min": "0" }
+      },
+      {
+        "id": "q_progres_fisik",
+        "label": "Progres Fisik Bangunan (%)",
+        "type": "number",
+        "required": true,
+        "config": { "min": "0", "max": "100" }
+      }
+    ]
+  },
+  {
+    "id": "monev-bos-kinerja",
+    "name": "Monev Dana BOS Kinerja SMP (2024)",
+    "description": "Evaluasi penggunaan Dana BOS Kinerja untuk peningkatan mutu pembelajaran dan fasilitas sekolah.",
+    "icon": "Layers",
+    "stats": {
+      "totalSchools": 5600,
+      "completedSurveys": 1200,
+      "pendingSurveys": 4400,
+      "issuesReported": 102
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "label": "Apakah Dana BOS Kinerja Tahap 1 sudah cair ke rekening sekolah?",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "id": "q2",
+        "label": "Persentase penyerapan Dana BOS Kinerja hingga bulan ini",
+        "type": "select",
+        "options": ["< 25%", "25% - 50%", "51% - 75%", "> 75%"],
+        "required": true
+      },
+      {
+        "id": "q3",
+        "label": "Fokus utama penggunaan Dana BOS (Pilih salah satu mayoritas)",
+        "type": "select",
+        "options": ["Peningkatan Kompetensi Guru", "Pengadaan Alat Multi Media Pembelajaran", "Pemeliharaan Sarana Prasarana", "Kegiatan Kesiswaan"],
+        "required": true
+      },
+      {
+        "id": "q4",
+        "label": "Apakah RKAS (Rencana Kegiatan dan Anggaran Sekolah) telah diperbarui sesuai realisasi?",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  }
+]
