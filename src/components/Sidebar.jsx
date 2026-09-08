@@ -1,8 +1,8 @@
 import React from 'react';
-import { LayoutDashboard, CheckSquare, Settings, Users, LogOut, GraduationCap, Map, Database, PlusCircle, FileSpreadsheet } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, Settings, Users, LogOut, GraduationCap, Map, Database, PlusCircle, FileSpreadsheet, X } from 'lucide-react';
 import './Sidebar.css';
 
-const Sidebar = ({ role, activeTab = 'dashboard', setActiveTab = () => {} }) => {
+const Sidebar = ({ role, activeTab = 'dashboard', setActiveTab = () => {}, isOpen = false, onClose = () => {}, onLogout = () => {} }) => {
   const isPejabat = role === 'pejabat';
 
   const handleTabClick = (e, tabId) => {
@@ -11,8 +11,10 @@ const Sidebar = ({ role, activeTab = 'dashboard', setActiveTab = () => {} }) => 
   };
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-header">
+    <>
+      {isOpen && <div className="sidebar-backdrop" onClick={onClose}></div>}
+      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+      <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div className="logo-container">
           <div className="logo-icon">
              <GraduationCap size={28} color="#ffffff" />
@@ -22,6 +24,9 @@ const Sidebar = ({ role, activeTab = 'dashboard', setActiveTab = () => {} }) => 
             <p>{isPejabat ? 'DIREKTORAT SMP' : 'MONEV LAPANGAN'}</p>
           </div>
         </div>
+        <button className="sidebar-close-btn" onClick={onClose} aria-label="Tutup menu">
+          <X size={22} />
+        </button>
       </div>
 
       <div className="sidebar-menu-label">{isPejabat ? 'MANAJEMEN PUSAT' : 'TUGAS PETUGAS'}</div>
@@ -57,11 +62,11 @@ const Sidebar = ({ role, activeTab = 'dashboard', setActiveTab = () => {} }) => 
           </>
         ) : (
           <>
-            <a href="#" className="nav-item active">
+            <a href="#" className={`nav-item ${activeTab === 'survei' ? 'active' : ''}`} onClick={(e) => handleTabClick(e, 'survei')}>
               <CheckSquare size={20} />
               <span>Survei Lapangan</span>
             </a>
-            <a href="#" className="nav-item">
+            <a href="#" className={`nav-item ${activeTab === 'riwayat' ? 'active' : ''}`} onClick={(e) => handleTabClick(e, 'riwayat')}>
               <Users size={20} />
               <span>Riwayat Penugasan</span>
             </a>
@@ -76,12 +81,13 @@ const Sidebar = ({ role, activeTab = 'dashboard', setActiveTab = () => {} }) => 
             <h4>{isPejabat ? 'Direktorat' : 'Petugas Survei'}</h4>
             <p>{isPejabat ? 'Pusat' : 'Lapangan'}</p>
           </div>
-          <button className="logout-btn">
+          <button className="logout-btn" onClick={onLogout}>
             <LogOut size={18} />
           </button>
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 };
 

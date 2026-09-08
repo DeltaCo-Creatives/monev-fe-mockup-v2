@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Sun, Moon, UserCircle, Bug } from 'lucide-react';
+import { Sun, Moon, UserCircle, Bug, Menu } from 'lucide-react';
 import './Header.css';
 
-const Header = ({ title, role, setRole, debugMode, setDebugMode }) => {
+const Header = ({ title, role, setRole, debugMode, setDebugMode, onMenuClick }) => {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -16,7 +16,14 @@ const Header = ({ title, role, setRole, debugMode, setDebugMode }) => {
   return (
     <header className="top-header">
       <div className="header-content">
-        <h1 className="header-title">{title}</h1>
+        <div className="header-left">
+          {onMenuClick && (
+            <button className="menu-toggle" onClick={onMenuClick} aria-label="Buka menu">
+              <Menu size={22} />
+            </button>
+          )}
+          <h1 className="header-title">{title}</h1>
+        </div>
         <div className="header-actions">
           {setDebugMode && (
             <button 

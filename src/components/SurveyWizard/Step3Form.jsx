@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Camera, ChevronLeft, ChevronRight, Save, FileText, Building, UploadCloud, AlertTriangle, User, Info, Plus, FileSpreadsheet, X, MapPin, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, FileText, Building, UploadCloud, AlertTriangle, User, Info, FileSpreadsheet, MapPin } from 'lucide-react';
 import './Step3Form.css';
 
 const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
@@ -7,26 +7,6 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [hasCriticalIssue, setHasCriticalIssue] = useState(false);
   
-  // Dynamic Menus State for Photo Documentation
-  const [menus, setMenus] = useState([
-    {
-      id: `menu_${Date.now()}`,
-      name: '',
-      rooms: [
-        {
-          id: `room_${Date.now()}`,
-          name: '',
-          photos: {
-            depan: [],
-            samping: [],
-            dalam: [],
-            papan: []
-          }
-        }
-      ]
-    }
-  ]);
-
   // State for Excel file
   const [excelFile, setExcelFile] = useState(null);
   const [pdfFile, setPdfFile] = useState(null);
@@ -60,122 +40,6 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
       }
     }
     setErrors(prev => ({...prev, [id]: err}));
-  };
-
-  // Menu & Room Management
-  const addMenu = () => {
-    setMenus(prev => [
-      ...prev,
-      {
-        id: `menu_${Date.now()}`,
-        name: '',
-        rooms: [
-          {
-            id: `room_${Date.now()}`,
-            name: '',
-            photos: { depan: [], samping: [], dalam: [], papan: [] }
-          }
-        ]
-      }
-    ]);
-  };
-
-  const removeMenu = (menuId) => {
-    setMenus(prev => prev.filter(m => m.id !== menuId));
-  };
-
-  const updateMenuName = (menuId, name) => {
-    setMenus(prev => prev.map(m => m.id === menuId ? { ...m, name } : m));
-  };
-
-  const addRoom = (menuId) => {
-    setMenus(prev => prev.map(m => {
-      if (m.id === menuId) {
-        return {
-          ...m,
-          rooms: [
-            ...m.rooms,
-            {
-              id: `room_${Date.now()}`,
-              name: '',
-              photos: { depan: [], samping: [], dalam: [], papan: [] }
-            }
-          ]
-        };
-      }
-      return m;
-    }));
-  };
-
-  const removeRoom = (menuId, roomId) => {
-    setMenus(prev => prev.map(m => {
-      if (m.id === menuId) {
-        return { ...m, rooms: m.rooms.filter(r => r.id !== roomId) };
-      }
-      return m;
-    }));
-  };
-
-  const updateRoomName = (menuId, roomId, name) => {
-    setMenus(prev => prev.map(m => {
-      if (m.id === menuId) {
-        return {
-          ...m,
-          rooms: m.rooms.map(r => r.id === roomId ? { ...r, name } : r)
-        };
-      }
-      return m;
-    }));
-  };
-
-  const handleMenuPhotoUpload = (e, menuId, roomId, angleId) => {
-    const files = Array.from(e.target.files);
-    if (files.length > 0) {
-      const urls = files.map(file => URL.createObjectURL(file));
-      setMenus(prev => prev.map(m => {
-        if (m.id === menuId) {
-          return {
-            ...m,
-            rooms: m.rooms.map(r => {
-              if (r.id === roomId) {
-                return {
-                  ...r,
-                  photos: {
-                    ...r.photos,
-                    [angleId]: [...r.photos[angleId], ...urls]
-                  }
-                };
-              }
-              return r;
-            })
-          };
-        }
-        return m;
-      }));
-    }
-  };
-
-  const removeMenuPhoto = (menuId, roomId, angleId, indexToRemove) => {
-    setMenus(prev => prev.map(m => {
-      if (m.id === menuId) {
-        return {
-          ...m,
-          rooms: m.rooms.map(r => {
-            if (r.id === roomId) {
-              return {
-                ...r,
-                photos: {
-                  ...r.photos,
-                  [angleId]: r.photos[angleId].filter((_, idx) => idx !== indexToRemove)
-                }
-              };
-            }
-            return r;
-          })
-        };
-      }
-      return m;
-    }));
   };
 
   const handleExcelUpload = (e) => {
@@ -391,13 +255,6 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
     }
   };
 
-  const photoAngles = [
-    { id: 'depan', label: 'Foto Tampak Depan' },
-    { id: 'samping', label: 'Foto Tampak Samping' },
-    { id: 'dalam', label: 'Foto Tampak Dalam' },
-    { id: 'papan', label: 'Foto Papan Proyek' }
-  ];
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!isUnlocked && !hasCriticalIssue) return;
@@ -429,8 +286,7 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
     }
 
     setTimeout(() => {
-      // Pass both flat form data (answers) and dynamic menus tree (menus)
-      onNext({ hasCriticalIssue, answers: { ...answers, menus } });
+      onNext({ hasCriticalIssue, answers });
     }, 500);
   };
 
@@ -580,165 +436,11 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
             </div>
           </div>
 
-          {/* 4. Documentation Section with Gallery */}
-          <div className="form-section premium-section slide-up-5">
-            <div className="section-header">
-              <Camera size={18} />
-              <h3>C. Dokumentasi Foto Bangunan / Ruang</h3>
-            </div>
-            <p className="section-desc">Silakan buat kategori (MENU) untuk bangunan/ruang yang disurvei, lalu tambahkan ruangan spesifik untuk mendokumentasikan foto-fotonya.</p>
-            
-            <div className="dynamic-menus-container">
-              {menus.map((menu, menuIdx) => (
-                <div key={menu.id} className="dynamic-menu-card glass">
-                  <div className="dynamic-menu-header" style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
-                    <div style={{ flex: 1 }}>
-                      <label className="form-label" style={{ color: 'var(--accent-blue)', fontWeight: 600 }}>Nama Menu/Kategori {menuIdx + 1} <span className="req">*</span></label>
-                      {category.menuOptions && category.menuOptions.length > 0 ? (
-                        <select
-                          className="form-select premium-input"
-                          value={menu.name}
-                          onChange={(e) => updateMenuName(menu.id, e.target.value)}
-                          disabled={!isUnlocked}
-                          required={!debugMode}
-                        >
-                          <option value="">Pilih Kategori Menu...</option>
-                          {category.menuOptions.map((opt, i) => (
-                            <option key={i} value={opt}>{opt}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        <input 
-                          type="text" 
-                          className="form-input premium-input"
-                          placeholder="Contoh: Rehabilitasi Ruang Kelas..."
-                          value={menu.name}
-                          onChange={(e) => updateMenuName(menu.id, e.target.value)}
-                          disabled={!isUnlocked}
-                          required={!debugMode}
-                        />
-                      )}
-                    </div>
-                    {menus.length > 1 && (
-                      <button 
-                        type="button" 
-                        className="icon-btn danger" 
-                        style={{ alignSelf: 'flex-end', marginBottom: '0.2rem' }}
-                        onClick={() => removeMenu(menu.id)}
-                        disabled={!isUnlocked}
-                      >
-                        <Trash2 size={20} />
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="dynamic-rooms-list" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginLeft: '1rem', paddingLeft: '1rem', borderLeft: '2px solid var(--border-light)' }}>
-                    {menu.rooms.map((room, roomIdx) => (
-                      <div key={room.id} className="dynamic-room-card" style={{ background: 'rgba(255, 255, 255, 0.4)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
-                        <div className="dynamic-room-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                          <label className="form-label" style={{ flex: 1, margin: 0, fontWeight: 600 }}>Ruang / Bangunan {roomIdx + 1} <span className="req">*</span></label>
-                          {menu.rooms.length > 1 && (
-                            <button 
-                              type="button" 
-                              className="icon-btn danger"
-                              style={{ padding: '4px' }}
-                              onClick={() => removeRoom(menu.id, room.id)}
-                              disabled={!isUnlocked}
-                            >
-                              <X size={18} />
-                            </button>
-                          )}
-                        </div>
-                        <input 
-                          type="text"
-                          className="form-input premium-input"
-                          placeholder="Contoh: Kelas 1A..."
-                          value={room.name}
-                          onChange={(e) => updateRoomName(menu.id, room.id, e.target.value)}
-                          disabled={!isUnlocked}
-                          required={!debugMode}
-                          style={{ marginBottom: '1rem' }}
-                        />
-
-                        {/* Photo Grid for this Room */}
-                        <div className="photo-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-                          {photoAngles.map((angle) => (
-                            <div key={angle.id} className="photo-upload-card" style={{ padding: '0.75rem' }}>
-                              <div className="photo-label" style={{ fontSize: '0.8rem' }}>{angle.label} <span className="req">*</span></div>
-                              
-                              <div className="gallery-container">
-                                {/* Render existing uploaded photos */}
-                                {room.photos[angle.id].map((url, idx) => (
-                                  <div key={idx} className="gallery-item">
-                                    <img src={url} alt={`${angle.label} ${idx + 1}`} />
-                                    <button 
-                                      type="button" 
-                                      className="delete-photo-btn"
-                                      onClick={() => removeMenuPhoto(menu.id, room.id, angle.id, idx)}
-                                      disabled={!isUnlocked}
-                                    >
-                                      <X size={14} />
-                                    </button>
-                                  </div>
-                                ))}
-                                
-                                {/* Render Upload Button */}
-                                <label className={`upload-zone photo-zone ${!isUnlocked ? 'disabled' : ''} ${room.photos[angle.id].length > 0 ? 'is-add-more' : 'is-empty'}`} style={{ padding: room.photos[angle.id].length > 0 ? '1rem' : '1.5rem 1rem' }}>
-                                  {room.photos[angle.id].length > 0 ? (
-                                    <Plus size={20} color="var(--text-secondary)" />
-                                  ) : (
-                                    <>
-                                      <Camera size={24} color={isUnlocked ? "var(--accent-blue)" : "var(--text-secondary)"} />
-                                      <span style={{ fontSize: '0.75rem' }}>Upload</span>
-                                    </>
-                                  )}
-                                  <input 
-                                    type="file" 
-                                    accept="image/*" 
-                                    multiple
-                                    className="file-input-hidden" 
-                                    required={!debugMode && room.photos[angle.id].length === 0} 
-                                    disabled={!isUnlocked}
-                                    onChange={(e) => handleMenuPhotoUpload(e, menu.id, room.id, angle.id)}
-                                  />
-                                </label>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                    
-                    <button 
-                      type="button" 
-                      className="btn-outline-dashed mt-1"
-                      onClick={() => addRoom(menu.id)}
-                      disabled={!isUnlocked}
-                      style={{ alignSelf: 'flex-start' }}
-                    >
-                      <Plus size={16} /> Tambah Ruang / Bangunan
-                    </button>
-                  </div>
-                </div>
-              ))}
-              
-              <button 
-                type="button" 
-                className="btn-primary mt-1"
-                style={{ width: '100%', justifyContent: 'center', padding: '1rem', borderRadius: '12px', marginTop: '1.5rem' }}
-                onClick={addMenu}
-                disabled={!isUnlocked}
-              >
-                <Plus size={20} /> Tambah MENU Kategori Baru
-              </button>
-            </div>
-          </div>
-
-          {/* 5. Dokumen Pendukung Section */}
+          {/* 4. Dokumen Pendukung Section */}
           <div className="form-section premium-section slide-up-5">
             <div className="section-header">
               <FileSpreadsheet size={18} />
-              <h3>D. Dokumen Pendukung</h3>
+              <h3>C. Dokumen Pendukung</h3>
             </div>
             <p className="section-desc">Unggah file instrumen rekapitulasi Monev (.xlsx) dan Surat Pernyataan Kepala Sekolah (.pdf).</p>
             

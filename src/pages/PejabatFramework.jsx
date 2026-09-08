@@ -7,7 +7,7 @@ import SchoolDetailFullView from '../components/SchoolDetailFullView';
 import MonevFormBuilder from '../components/MonevFormBuilder';
 import MonevDataViewer from '../components/MonevDataViewer';
 
-const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesData, setCategoriesData, schoolsData, setSchoolsData }) => {
+const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesData, setCategoriesData, schoolsData, setSchoolsData, onLogout }) => {
   const [activeTab, setActiveTab] = useState('dashboard');
 
   const [selectedCatId, setSelectedCatId] = useState(categoriesData[0]?.id);
@@ -133,7 +133,7 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
 
   return (
     <>
-      <Layout role={role} setRole={setRole} title={activeTab === 'dashboard' ? 'Command Center (Directorate)' : 'Manajemen Status Sekolah'} debugMode={debugMode} setDebugMode={setDebugMode} activeTab={activeTab} setActiveTab={setActiveTab}>
+      <Layout role={role} setRole={setRole} title={activeTab === 'dashboard' ? 'Command Center (Directorate)' : 'Manajemen Status Sekolah'} debugMode={debugMode} setDebugMode={setDebugMode} activeTab={activeTab} setActiveTab={setActiveTab} onLogout={onLogout}>
         
         {detailedSchool ? (
           <SchoolDetailFullView school={detailedSchool} onBack={() => setDetailedSchool(null)} />

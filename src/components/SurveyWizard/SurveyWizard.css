@@ -141,4 +141,21 @@
   .step-title {
     display: none;
   }
+
+  .stepper-header {
+    padding: 1rem;
+  }
+
+  .step-connector {
+    margin: 0 0.5rem;
+  }
+
+  .wizard-step-card {
+    padding: 1.25rem;
+  }
+
+  .wizard-actions {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight, Check } from 'lucide-react';
 import Step1SchoolSearch from './Step1SchoolSearch';
 import Step2CategorySelect from './Step2CategorySelect';
@@ -6,7 +6,7 @@ import Step3Form from './Step3Form';
 import Step4Success from './Step4Success';
 import './SurveyWizard.css';
 
-const SurveyWizard = ({ debugMode, categoriesData, setCategoriesData, schoolsData, setSchoolsData }) => {
+const SurveyWizard = ({ debugMode, categoriesData, setCategoriesData, schoolsData, setSchoolsData, setRiwayatData }) => {
   const [step, setStep] = useState(1);
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -62,6 +62,16 @@ const SurveyWizard = ({ debugMode, categoriesData, setCategoriesData, schoolsDat
         }
         return cat;
       }));
+
+      if (setRiwayatData) {
+        setRiwayatData(prev => [{
+          id: `r-${Date.now()}`,
+          sekolah: selectedSchool['Nama Satuan Pendidikan'],
+          kategori: selectedCategory.name,
+          tanggal: new Date().toISOString(),
+          status: isKendala ? 'Kendala' : 'Selesai'
+        }, ...prev]);
+      }
     }
     setStep(prev => prev + 1);
   };
@@ -72,6 +82,13 @@ const SurveyWizard = ({ debugMode, categoriesData, setCategoriesData, schoolsDat
     setSelectedCategory(null);
     setStep(1);
   };
+
+  useEffect(() => {
+    if (step === 4) {
+      const timer = setTimeout(handleReset, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [step]);
 
   const steps = [
     { num: 1, title: 'Pilih Lokasi' },

@@ -1,0 +1,23 @@
+[
+  {
+    "id": "r-1",
+    "sekolah": "SMPN 01 Menteng",
+    "kategori": "Monev Revitalisasi SMP Tahap 1 (2024)",
+    "tanggal": "2024-05-12T08:00:00.000Z",
+    "status": "Selesai"
+  },
+  {
+    "id": "r-2",
+    "sekolah": "SMPN 4 Bandung",
+    "kategori": "Monev Revitalisasi SMP Tahap 1 (2024)",
+    "tanggal": "2024-05-14T09:30:00.000Z",
+    "status": "Selesai"
+  },
+  {
+    "id": "r-3",
+    "sekolah": "SMPN 1 Surabaya",
+    "kategori": "Monev Revitalisasi SMP Tahap 1 (2024)",
+    "tanggal": "2024-05-10T10:15:00.000Z",
+    "status": "Kendala"
+  }
+]

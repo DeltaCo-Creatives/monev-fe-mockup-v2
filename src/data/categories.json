@@ -35,7 +35,7 @@
         "id": "q1",
         "label": "Status Progres Fisik Bangunan Saat Ini",
         "type": "select",
-        "options": ["0% - 25% (Persiapan/Fondasi)", "26% - 50% (Struktur Utama)", "51% - 75% (Atap & Dinding)", "76% - 100% (Finishing & Selesai)"],
+        "config": { "options": ["0% - 25% (Persiapan/Fondasi)", "26% - 50% (Struktur Utama)", "51% - 75% (Atap & Dinding)", "76% - 100% (Finishing & Selesai)"] },
         "required": true
       },
       {
@@ -103,14 +103,14 @@
         "id": "q2",
         "label": "Persentase penyerapan Dana BOS Kinerja hingga bulan ini",
         "type": "select",
-        "options": ["< 25%", "25% - 50%", "51% - 75%", "> 75%"],
+        "config": { "options": ["< 25%", "25% - 50%", "51% - 75%", "> 75%"] },
         "required": true
       },
       {
         "id": "q3",
         "label": "Fokus utama penggunaan Dana BOS (Pilih salah satu mayoritas)",
         "type": "select",
-        "options": ["Peningkatan Kompetensi Guru", "Pengadaan Alat Multi Media Pembelajaran", "Pemeliharaan Sarana Prasarana", "Kegiatan Kesiswaan"],
+        "config": { "options": ["Peningkatan Kompetensi Guru", "Pengadaan Alat Multi Media Pembelajaran", "Pemeliharaan Sarana Prasarana", "Kegiatan Kesiswaan"] },
         "required": true
       },
       {

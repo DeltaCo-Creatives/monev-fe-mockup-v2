@@ -19,10 +19,30 @@
   align-items: center;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
 .header-title {
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
 }
 
 .header-actions {
@@ -52,6 +72,9 @@
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .theme-toggle {
@@ -71,4 +94,39 @@
 .theme-toggle:hover {
   color: var(--text-primary);
   background: var(--bg-card-hover);
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0 1rem;
+  }
+
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header-title {
+    font-size: 1rem;
+  }
+
+  .header-actions {
+    gap: 0.5rem;
+  }
+
+  .role-select {
+    max-width: 90px;
+  }
+}
+
+@media (max-width: 480px) {
+  .role-switcher {
+    padding: 0.35rem 0.5rem;
+  }
+
+  .role-select {
+    font-size: 0.75rem;
+    max-width: 70px;
+  }
 }
