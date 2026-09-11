@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { GraduationCap, User, Lock } from 'lucide-react';
 import './Login.css';
 
 const Login = ({ onLogin }) => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('admin123');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onLogin();
+    navigate('/', { replace: true });
   };
 
   return (

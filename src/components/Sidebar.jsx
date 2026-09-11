@@ -1,14 +1,10 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, CheckSquare, Settings, Users, LogOut, GraduationCap, Map, Database, PlusCircle, FileSpreadsheet, X } from 'lucide-react';
 import './Sidebar.css';
 
-const Sidebar = ({ role, activeTab = 'dashboard', setActiveTab = () => {}, isOpen = false, onClose = () => {}, onLogout = () => {} }) => {
+const Sidebar = ({ role, isOpen = false, onClose = () => {}, onLogout = () => {} }) => {
   const isPejabat = role === 'pejabat';
-
-  const handleTabClick = (e, tabId) => {
-    e.preventDefault();
-    setActiveTab(tabId);
-  };
 
   return (
     <>
@@ -34,42 +30,33 @@ const Sidebar = ({ role, activeTab = 'dashboard', setActiveTab = () => {}, isOpe
       <nav className="sidebar-nav">
         {isPejabat ? (
           <>
-            <a href="#" className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={(e) => handleTabClick(e, 'dashboard')}>
+            <NavLink to="/pejabat/dashboard" className="nav-item" onClick={onClose}>
               <LayoutDashboard size={20} />
               <span>Dashboard Kategori</span>
-            </a>
-            <a href="#"
-              className={`nav-item ${activeTab === 'management' ? 'active' : ''}`}
-              onClick={(e) => handleTabClick(e, 'management')}
-            >
+            </NavLink>
+            <NavLink to="/pejabat/management" className="nav-item" onClick={onClose}>
               <Database size={20} className="menu-icon" />
               <span>Manajemen Status</span>
-            </a>
-            <a href="#"
-              className={`nav-item ${activeTab === 'create' ? 'active' : ''}`}
-              onClick={(e) => handleTabClick(e, 'create')}
-            >
+            </NavLink>
+            <NavLink to="/pejabat/create" className="nav-item" onClick={onClose}>
               <PlusCircle size={20} className="menu-icon" />
               <span>Buat Program Monev</span>
-            </a>
-            <a href="#"
-              className={`nav-item ${activeTab === 'data' ? 'active' : ''}`}
-              onClick={(e) => handleTabClick(e, 'data')}
-            >
+            </NavLink>
+            <NavLink to="/pejabat/data" className="nav-item" onClick={onClose}>
               <FileSpreadsheet size={20} className="menu-icon" />
               <span>Data & Ekspor</span>
-            </a>
+            </NavLink>
           </>
         ) : (
           <>
-            <a href="#" className={`nav-item ${activeTab === 'survei' ? 'active' : ''}`} onClick={(e) => handleTabClick(e, 'survei')}>
+            <NavLink to="/petugas/survei" className="nav-item" onClick={onClose}>
               <CheckSquare size={20} />
               <span>Survei Lapangan</span>
-            </a>
-            <a href="#" className={`nav-item ${activeTab === 'riwayat' ? 'active' : ''}`} onClick={(e) => handleTabClick(e, 'riwayat')}>
+            </NavLink>
+            <NavLink to="/petugas/riwayat" className="nav-item" onClick={onClose}>
               <Users size={20} />
               <span>Riwayat Penugasan</span>
-            </a>
+            </NavLink>
           </>
         )}
       </nav>

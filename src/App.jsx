@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import PejabatFramework from './pages/PejabatFramework';
 import PetugasFramework from './pages/PetugasFramework';
@@ -14,18 +15,27 @@ function App() {
   const [schoolsData, setSchoolsData] = useState(mockSchoolsDataRaw);
   const [riwayatData, setRiwayatData] = useState(riwayatDataRaw);
 
-  if (!isLoggedIn) {
-    return <Login onLogin={() => setIsLoggedIn(true)} />;
-  }
-
   return (
-    <>
-      {role === 'pejabat' ? (
-        <PejabatFramework role={role} setRole={setRole} debugMode={debugMode} setDebugMode={setDebugMode} categoriesData={categoriesData} setCategoriesData={setCategoriesData} schoolsData={schoolsData} setSchoolsData={setSchoolsData} onLogout={() => setIsLoggedIn(false)} />
-      ) : (
-        <PetugasFramework role={role} setRole={setRole} debugMode={debugMode} setDebugMode={setDebugMode} categoriesData={categoriesData} setCategoriesData={setCategoriesData} schoolsData={schoolsData} setSchoolsData={setSchoolsData} riwayatData={riwayatData} setRiwayatData={setRiwayatData} onLogout={() => setIsLoggedIn(false)} />
-      )}
-    </>
+    <Routes>
+      <Route path="/login" element={<Login onLogin={() => setIsLoggedIn(true)} />} />
+      <Route path="/pejabat/*" element={
+        isLoggedIn && role === 'pejabat' ? (
+          <PejabatFramework role={role} setRole={setRole} debugMode={debugMode} setDebugMode={setDebugMode} categoriesData={categoriesData} setCategoriesData={setCategoriesData} schoolsData={schoolsData} setSchoolsData={setSchoolsData} onLogout={() => setIsLoggedIn(false)} />
+        ) : (
+          <Navigate to="/login" replace />
+        )
+      } />
+      <Route path="/petugas/*" element={
+        isLoggedIn && role === 'petugas' ? (
+          <PetugasFramework role={role} setRole={setRole} debugMode={debugMode} setDebugMode={setDebugMode} categoriesData={categoriesData} setCategoriesData={setCategoriesData} schoolsData={schoolsData} setSchoolsData={setSchoolsData} riwayatData={riwayatData} setRiwayatData={setRiwayatData} onLogout={() => setIsLoggedIn(false)} />
+        ) : (
+          <Navigate to="/login" replace />
+        )
+      } />
+      <Route path="*" element={
+        !isLoggedIn ? <Navigate to="/login" replace /> : (role === 'pejabat' ? <Navigate to="/pejabat/dashboard" replace /> : <Navigate to="/petugas/survei" replace />)
+      } />
+    </Routes>
   );
 }
 

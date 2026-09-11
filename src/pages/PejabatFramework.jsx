@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Layers, Building2, Target, CheckCircle2, AlertCircle, Search, FileText, ChevronRight, BarChart3, PieChart as PieChartIcon, X, MapPin, Calendar, User, FileSpreadsheet, Image as ImageIcon } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
@@ -8,7 +9,14 @@ import MonevFormBuilder from '../components/MonevFormBuilder';
 import MonevDataViewer from '../components/MonevDataViewer';
 
 const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesData, setCategoriesData, schoolsData, setSchoolsData, onLogout }) => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const getTitle = () => {
+    if (location.pathname.includes('management')) return 'Manajemen Status Sekolah';
+    if (location.pathname.includes('create')) return 'Buat Program Monev';
+    if (location.pathname.includes('data')) return 'Data & Ekspor';
+    return 'Command Center (Directorate)';
+  };
 
   const [selectedCatId, setSelectedCatId] = useState(categoriesData[0]?.id);
   const [searchTerm, setSearchTerm] = useState('');
@@ -31,7 +39,7 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
   const handleCreateCategory = (newCategory) => {
     setCategoriesData(prev => [newCategory, ...prev]);
     setSelectedCatId(newCategory.id);
-    setActiveTab('dashboard');
+    navigate('/pejabat/dashboard');
   };
 
   const handleStatusChange = (schoolId, newStatus) => {
@@ -133,12 +141,14 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
 
   return (
     <>
-      <Layout role={role} setRole={setRole} title={activeTab === 'dashboard' ? 'Command Center (Directorate)' : 'Manajemen Status Sekolah'} debugMode={debugMode} setDebugMode={setDebugMode} activeTab={activeTab} setActiveTab={setActiveTab} onLogout={onLogout}>
+      <Layout role={role} setRole={setRole} title={getTitle()} debugMode={debugMode} setDebugMode={setDebugMode} onLogout={onLogout}>
         
         {detailedSchool ? (
           <SchoolDetailFullView school={detailedSchool} onBack={() => setDetailedSchool(null)} />
-        ) : activeTab === 'dashboard' ? (
-          <>
+        ) : (
+          <Routes>
+            <Route path="dashboard" element={
+              <>
             {/* 1. Global Overview Metrics */}
         <div className="global-stats-bar slide-up-1">
           <div className="global-stat glass">
@@ -370,7 +380,8 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
           </div>
         )}
         </>
-        ) : activeTab === 'management' ? (
+            } />
+            <Route path="management" element={
           <div className="management-view animate-fade-in slide-up-1">
             <div className="section-title">
               <h3>Manajemen Override Status</h3>
@@ -454,17 +465,22 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
               />
             </div>
           </div>
-        ) : activeTab === 'create' ? (
+            } />
+            <Route path="create" element={
           <MonevFormBuilder 
             onSave={handleCreateCategory} 
-            onCancel={() => setActiveTab('dashboard')} 
+            onCancel={() => navigate('/pejabat/dashboard')} 
           />
-        ) : activeTab === 'data' ? (
+            } />
+            <Route path="data" element={
           <MonevDataViewer 
             categoriesData={categoriesData} 
             schoolsData={schoolsData} 
           />
-        ) : null}
+            } />
+            <Route path="*" element={<Navigate to="dashboard" replace />} />
+          </Routes>
+        )}
       </Layout>
 
     </>

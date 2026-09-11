@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
-const Layout = ({ children, role, setRole, title = "Dashboard", debugMode, setDebugMode, activeTab, setActiveTab, onLogout }) => {
+const Layout = ({ children, role, setRole, title = "Dashboard", debugMode, setDebugMode, onLogout }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="app-container">
       <Sidebar
         role={role}
-        activeTab={activeTab}
-        setActiveTab={(tab) => { if (setActiveTab) setActiveTab(tab); setSidebarOpen(false); }}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         onLogout={onLogout}
