@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Download, Target, Search } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import '../pages/PejabatFramework.css';
 
 const MonevDataViewer = ({ categoriesData, schoolsData }) => {
@@ -11,6 +13,19 @@ const MonevDataViewer = ({ categoriesData, schoolsData }) => {
   if (!selectedCategory) {
     return <div style={{ padding: '2rem' }}>Tidak ada data kategori Monev.</div>;
   }
+
+  const containerRef = React.useRef(null);
+
+  useGSAP(() => {
+    gsap.from(".gsap-slide-up", {
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "back.out(1.5)",
+      clearProps: "all"
+    });
+  }, { scope: containerRef });
 
   // Get dynamic questions to form columns
   const questions = selectedCategory.questions || [];
@@ -87,7 +102,7 @@ const MonevDataViewer = ({ categoriesData, schoolsData }) => {
   };
 
   return (
-    <div className="animate-fade-in slide-up-1" style={{ padding: '0 0.5rem' }}>
+    <div className="gsap-slide-up" ref={containerRef} style={{ padding: '0 0.5rem' }}>
       <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h3>Data & Ekspor Laporan</h3>
@@ -99,7 +114,7 @@ const MonevDataViewer = ({ categoriesData, schoolsData }) => {
       </div>
 
       {/* Controls */}
-      <div className="data-grid-container glass slide-up-2">
+      <div className="data-grid-container glass gsap-slide-up">
         <div className="grid-header" style={{ display: 'flex', gap: '1rem', width: '100%', maxWidth: 'none', marginBottom: '1rem' }}>
           <div style={{ position: 'relative', flex: 1 }}>
             <Target size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />

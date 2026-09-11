@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, FileText, Building, UploadCloud, AlertTriangle, User, Info, FileSpreadsheet, MapPin } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import './Step3Form.css';
 
 const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
@@ -16,6 +18,19 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
 
   // Custom Validation Errors
   const [errors, setErrors] = useState({});
+
+  const containerRef = React.useRef(null);
+
+  useGSAP(() => {
+    gsap.from(".gsap-slide-up", {
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "back.out(1.5)",
+      clearProps: "all"
+    });
+  }, { scope: containerRef });
 
   const validateInput = (id, type, config, value) => {
     setFormValues(prev => ({...prev, [id]: value}));
@@ -88,7 +103,7 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
     };
     
     return (
-      <div className="cascading-question animate-slide-up" style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#f8fafc', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
+      <div className="cascading-question gsap-slide-up" style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#f8fafc', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
         <label className="form-label" style={{ fontSize: '0.95rem' }}>{cascadingQ.label} {cascadingQ.required && <span className="req">*</span>}</label>
         {renderQuestion(cascadingQ)}
       </div>
@@ -292,13 +307,13 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
 
   return (
     <>
-      <div className="wizard-step-card step3-container animate-fade-in glass">
+      <div className="wizard-step-card step3-container gsap-slide-up glass" ref={containerRef}>
         <div className="step-header">
           <h2>Isi Instrumen & Dokumentasi</h2>
           <p>Lengkapi form instrumen dan unggah foto dokumentasi untuk sekolah yang dipilih.</p>
         </div>
 
-        <div className="target-school-banner slide-up-1">
+        <div className="target-school-banner gsap-slide-up">
           <Building size={20} className="banner-icon" />
           <div className="banner-info">
             <span>Target Survei Saat Ini:</span>
@@ -309,7 +324,7 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
       <form className="dynamic-survey-form" onSubmit={handleSubmit}>
         
         {/* 1. Catatan & Kendala Section (MOVED TO TOP) */}
-        <div className="form-section premium-section slide-up-2">
+        <div className="form-section premium-section gsap-slide-up">
           <div className="section-header">
             <AlertTriangle size={18} />
             <h3>Laporkan Kendala Lapangan</h3>
@@ -348,7 +363,7 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
         </div>
 
         {/* 2. Status Kunjungan (The Lock) */}
-        <div className={`premium-section warning-card slide-up-3 ${hasCriticalIssue ? 'bypassed-state' : ''}`}>
+        <div className={`premium-section warning-card gsap-slide-up ${hasCriticalIssue ? 'bypassed-state' : ''}`}>
           <div className="section-header warning-header">
             <AlertTriangle size={20} />
             <h3>Status Kunjungan (Wajib)</h3>
@@ -374,7 +389,7 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
         <div className={`form-content-wrapper ${(!isUnlocked && !hasCriticalIssue) ? 'is-locked' : ''} ${hasCriticalIssue ? 'bypassed-state' : ''}`}>
           
           {/* 2. Data Umum Section */}
-          <div className="form-section premium-section slide-up-3">
+          <div className="form-section premium-section gsap-slide-up">
             <div className="section-header">
               <User size={18} />
               <h3>A. Data Umum</h3>
@@ -409,7 +424,7 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
           </div>
 
           {/* 3. Dynamic Questions Section */}
-          <div className="form-section premium-section slide-up-4">
+          <div className="form-section premium-section gsap-slide-up">
             <div className="section-header">
               <FileText size={18} />
               <h3>B. Instrumen {category.name}</h3>
@@ -437,7 +452,7 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
           </div>
 
           {/* 4. Dokumen Pendukung Section */}
-          <div className="form-section premium-section slide-up-5">
+          <div className="form-section premium-section gsap-slide-up">
             <div className="section-header">
               <FileSpreadsheet size={18} />
               <h3>C. Dokumen Pendukung</h3>
@@ -501,7 +516,7 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
             </div>
           </div>
           {/* 5. Catatan Tambahan */}
-          <div className="form-section premium-section slide-up-6">
+          <div className="form-section premium-section gsap-slide-up">
             <div className="section-header">
               <FileText size={18} />
               <h3>Catatan Tambahan</h3>

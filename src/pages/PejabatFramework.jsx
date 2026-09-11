@@ -3,6 +3,8 @@ import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-
 import Layout from '../components/Layout';
 import { Layers, Building2, Target, CheckCircle2, AlertCircle, Search, FileText, ChevronRight, BarChart3, PieChart as PieChartIcon, X, MapPin, Calendar, User, FileSpreadsheet, Image as ImageIcon } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import './PejabatFramework.css';
 import SchoolDetailFullView from '../components/SchoolDetailFullView';
 import MonevFormBuilder from '../components/MonevFormBuilder';
@@ -139,10 +141,23 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
   const currentManagementPage = Math.min(Math.max(1, managementPage), Math.max(1, totalManagementPages));
   const paginatedManagementData = managementFilteredData.slice((currentManagementPage - 1) * itemsPerPage, currentManagementPage * itemsPerPage);
 
+  const containerRef = React.useRef(null);
+
+  useGSAP(() => {
+    gsap.from(".gsap-slide-up", {
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "back.out(1.5)",
+      clearProps: "all"
+    });
+  }, { dependencies: [location.pathname, selectedCatId, statusFilter], scope: containerRef });
+
   return (
     <>
       <Layout role={role} setRole={setRole} title={getTitle()} debugMode={debugMode} setDebugMode={setDebugMode} onLogout={onLogout}>
-        
+        <div ref={containerRef} style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', flex: 1 }}>
         {detailedSchool ? (
           <SchoolDetailFullView school={detailedSchool} onBack={() => setDetailedSchool(null)} />
         ) : (
@@ -150,7 +165,7 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
             <Route path="dashboard" element={
               <>
             {/* 1. Global Overview Metrics */}
-        <div className="global-stats-bar slide-up-1">
+        <div className="global-stats-bar gsap-slide-up">
           <div className="global-stat glass">
             <div className="global-stat-icon"><Layers size={24} /></div>
             <div className="global-stat-info">
@@ -168,12 +183,12 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
         </div>
 
         {/* 2. Modern Category Selector Cards */}
-        <div className="section-title slide-up-2">
+        <div className="section-title gsap-slide-up">
           <h3>Program Monitoring & Evaluasi</h3>
           <p>Pilih program untuk melihat analitik dan progres lapangan.</p>
         </div>
         
-        <div className="category-cards-container slide-up-2">
+        <div className="category-cards-container gsap-slide-up">
           {categoriesData.map(cat => (
             <div 
               key={cat.id} 
@@ -198,7 +213,7 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
 
         {/* 3. Dynamic Category Analytics View */}
         {selectedCat && (
-          <div className="category-dashboard animate-fade-in slide-up-3">
+          <div className="category-dashboard gsap-slide-up">
             
             <div className="analytics-grid">
               
@@ -276,7 +291,7 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
             {/* Quick Metrics Row - Now Clickable Filters */}
             <div className="quick-metrics-row">
               <div 
-                className={`cat-stat-card glass slide-up-4 clickable-metric ${statusFilter === 'ALL' ? 'active-metric-filter' : ''}`}
+                className={`cat-stat-card glass gsap-slide-up clickable-metric ${statusFilter === 'ALL' ? 'active-metric-filter' : ''}`}
                 onClick={() => setStatusFilter('ALL')}
               >
                 <Target size={24} color="var(--accent-blue)" className="metric-icon" />
@@ -286,7 +301,7 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
                 </div>
               </div>
               <div 
-                className={`cat-stat-card glass slide-up-4 clickable-metric ${statusFilter === 'KENDALA' ? 'active-metric-filter' : ''}`} 
+                className={`cat-stat-card glass gsap-slide-up clickable-metric ${statusFilter === 'KENDALA' ? 'active-metric-filter' : ''}`} 
                 style={{ animationDelay: '0.1s' }}
                 onClick={() => setStatusFilter('KENDALA')}
               >
@@ -297,7 +312,7 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
                 </div>
               </div>
               <div 
-                className={`cat-stat-card glass slide-up-4 clickable-metric ${statusFilter === 'SELESAI' ? 'active-metric-filter' : ''}`} 
+                className={`cat-stat-card glass gsap-slide-up clickable-metric ${statusFilter === 'SELESAI' ? 'active-metric-filter' : ''}`} 
                 style={{ animationDelay: '0.2s' }}
                 onClick={() => setStatusFilter('SELESAI')}
               >
@@ -310,7 +325,7 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
             </div>
 
             {/* 4. Interactive Data Grid */}
-            <div className="data-grid-container glass slide-up-5">
+            <div className="data-grid-container glass gsap-slide-up">
               <div className="grid-header">
                 <div className="grid-title">
                   <FileText size={20} />
@@ -382,7 +397,7 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
         </>
             } />
             <Route path="management" element={
-          <div className="management-view animate-fade-in slide-up-1">
+          <div className="management-view gsap-slide-up">
             <div className="section-title">
               <h3>Manajemen Override Status</h3>
               <p>Ubah status sekolah secara manual jika diperlukan. Perubahan akan langsung memengaruhi metrik di Dashboard Kategori.</p>
@@ -481,6 +496,7 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
             <Route path="*" element={<Navigate to="dashboard" replace />} />
           </Routes>
         )}
+        </div>
       </Layout>
 
     </>

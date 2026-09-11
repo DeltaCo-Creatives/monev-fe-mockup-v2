@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Search, MapPin, Building, ChevronRight } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import schoolData from '../../data/schools.json';
 import './Step1SchoolSearch.css';
 
@@ -31,8 +33,41 @@ const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
     return matchesSearch && matchesRegion && matchesCity;
   }).slice(0, 50); // Limit to 50 for performance in mockup
 
+  const containerRef = React.useRef(null);
+  useGSAP(() => {
+    gsap.from(".gsap-slide-up", {
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "back.out(1.5)",
+      clearProps: "all"
+    });
+  }, { scope: containerRef });
+
+  // Animate the list when search or filters change
+  useGSAP(() => {
+    gsap.from(".school-card", {
+      y: 15,
+      opacity: 0,
+      duration: 0.3,
+      stagger: 0.03,
+      ease: "power2.out",
+      clearProps: "all"
+    });
+  }, { scope: containerRef, dependencies: [searchTerm, regionFilter, cityFilter] });
+
+  const handleSchoolClick = (e, school) => {
+    // Play a small bounce animation on click
+    gsap.fromTo(e.currentTarget, 
+      { scale: 0.96 }, 
+      { scale: 1, duration: 0.4, ease: "back.out(1.5)", clearProps: "all" }
+    );
+    setSelectedSchool(school);
+  };
+
   return (
-    <div className="wizard-step-card animate-fade-in glass">
+    <div className="wizard-step-card gsap-slide-up glass" ref={containerRef}>
       <div className="step-header">
         <h2>Cari & Pilih Sekolah</h2>
         <p>Silakan cari sekolah yang akan Anda survei hari ini berdasarkan NPSN, Nama, atau Wilayah.</p>
@@ -82,7 +117,7 @@ const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
             <div 
               key={idx} 
               className={`school-card ${selectedSchool?.NPSN === school.NPSN ? 'selected' : ''}`}
-              onClick={() => setSelectedSchool(school)}
+              onClick={(e) => handleSchoolClick(e, school)}
             >
               <div className="school-card-icon">
                 <Building size={24} />

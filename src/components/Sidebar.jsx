@@ -1,15 +1,45 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, CheckSquare, Settings, Users, LogOut, GraduationCap, Map, Database, PlusCircle, FileSpreadsheet, X } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import './Sidebar.css';
 
 const Sidebar = ({ role, isOpen = false, onClose = () => {}, onLogout = () => {} }) => {
   const isPejabat = role === 'pejabat';
+  const sidebarRef = React.useRef(null);
+
+  useGSAP(() => {
+    gsap.from(".logo-container", {
+      y: -20,
+      opacity: 0,
+      duration: 0.5,
+      ease: "back.out(1.5)",
+      clearProps: "all"
+    });
+    gsap.from(".nav-item", {
+      x: -20,
+      opacity: 0,
+      duration: 0.5,
+      stagger: 0.05,
+      ease: "power2.out",
+      delay: 0.1,
+      clearProps: "all"
+    });
+    gsap.from(".sidebar-footer", {
+      y: 20,
+      opacity: 0,
+      duration: 0.5,
+      ease: "power2.out",
+      delay: 0.3,
+      clearProps: "all"
+    });
+  }, { scope: sidebarRef, dependencies: [role] });
 
   return (
     <>
       {isOpen && <div className="sidebar-backdrop" onClick={onClose}></div>}
-      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+      <aside className={`sidebar ${isOpen ? 'open' : ''}`} ref={sidebarRef}>
       <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div className="logo-container">
           <div className="logo-icon">

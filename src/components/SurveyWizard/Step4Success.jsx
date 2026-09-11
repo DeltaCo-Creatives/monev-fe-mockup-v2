@@ -1,10 +1,37 @@
 import React from 'react';
 import { CheckCircle, ArrowRight } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import './Step4Success.css';
 
 const Step4Success = ({ school, category, onReset }) => {
+  const containerRef = React.useRef(null);
+  useGSAP(() => {
+    gsap.from(".success-card", {
+      scale: 0.8,
+      opacity: 0,
+      duration: 0.6,
+      ease: "back.out(1.5)"
+    });
+    gsap.from(".success-icon-wrapper", {
+      scale: 0,
+      rotation: -180,
+      duration: 0.8,
+      delay: 0.2,
+      ease: "elastic.out(1, 0.5)"
+    });
+    gsap.from(".success-summary > *", {
+      y: 20,
+      opacity: 0,
+      duration: 0.5,
+      stagger: 0.1,
+      delay: 0.4,
+      ease: "power2.out"
+    });
+  }, { scope: containerRef });
+
   return (
-    <div className="wizard-step-card animate-fade-in glass success-card">
+    <div className="wizard-step-card glass success-card" ref={containerRef}>
       <div className="success-icon-wrapper">
         <CheckCircle size={64} className="success-icon" />
       </div>

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, MapPin, Calendar, User, CheckCircle2, AlertCircle, Clock, FileSpreadsheet, Building } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import AdvancedImageViewer from './AdvancedImageViewer';
 import categoriesDataRaw from '../data/categories.json';
 import './SchoolDetailFullView.css';
@@ -8,6 +10,19 @@ const SchoolDetailFullView = ({ school, onBack }) => {
   const [activeTab, setActiveTab] = useState('instrumen'); // 'instrumen', 'dokumen', 'foto'
 
   const category = categoriesDataRaw.find(c => c.id === school.categoryId);
+
+  const containerRef = React.useRef(null);
+
+  useGSAP(() => {
+    gsap.from(".gsap-slide-up", {
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "back.out(1.5)",
+      clearProps: "all"
+    });
+  }, { scope: containerRef, dependencies: [activeTab] });
 
   const getStatusBadge = (status) => {
     switch(status) {
@@ -32,7 +47,7 @@ const SchoolDetailFullView = ({ school, onBack }) => {
   ];
 
   return (
-    <div className="sdfs-container animate-fade-in slide-up-1">
+    <div className="sdfs-container gsap-slide-up" ref={containerRef}>
       {/* Top Header / Navigation */}
       <div className="sdfs-header glass">
         <button className="sdfs-back-btn" onClick={onBack}>
@@ -95,7 +110,7 @@ const SchoolDetailFullView = ({ school, onBack }) => {
 
           <div className="sdfs-tab-content">
             {activeTab === 'instrumen' && (
-              <div className="sdfs-card glass slide-up-2">
+              <div className="sdfs-card glass gsap-slide-up">
                 <div className="sdfs-card-header">
                   <h3>Hasil Pengisian Instrumen</h3>
                 </div>
@@ -132,7 +147,7 @@ const SchoolDetailFullView = ({ school, onBack }) => {
             )}
 
             {activeTab === 'foto' && (
-              <div className="slide-up-2">
+              <div className="gsap-slide-up">
                 <div className="sdfs-card glass" style={{ padding: '0', background: 'transparent', border: 'none', boxShadow: 'none' }}>
                   <AdvancedImageViewer images={mockRoomImages} title="Foto Ruangan Kelas" />
                   <AdvancedImageViewer images={mockAdminImages} title="Foto Dokumen Fisik" />
@@ -141,7 +156,7 @@ const SchoolDetailFullView = ({ school, onBack }) => {
             )}
 
             {activeTab === 'dokumen' && (
-              <div className="sdfs-card glass slide-up-2">
+              <div className="sdfs-card glass gsap-slide-up">
                 <div className="sdfs-card-header">
                   <h3>Dokumen Administrasi (Excel/PDF)</h3>
                 </div>

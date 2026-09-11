@@ -22,7 +22,7 @@ const Layout = ({ children, role, setRole, title = "Dashboard", debugMode, setDe
           setDebugMode={setDebugMode}
           onMenuClick={() => setSidebarOpen(true)}
         />
-        <div className="content-inner animate-fade-in">
+        <div className="content-inner">
           {children}
         </div>
       </main>

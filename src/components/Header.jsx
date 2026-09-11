@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sun, Moon, UserCircle, Bug, Menu } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import './Header.css';
 
 const Header = ({ title, role, setRole, debugMode, setDebugMode, onMenuClick }) => {
@@ -13,8 +15,26 @@ const Header = ({ title, role, setRole, debugMode, setDebugMode, onMenuClick }) 
     }
   }, [isDark]);
 
+  const headerRef = React.useRef(null);
+  useGSAP(() => {
+    gsap.from(".top-header", {
+      y: -20,
+      opacity: 0,
+      duration: 0.5,
+      ease: "power2.out"
+    });
+    gsap.from(".header-left, .header-actions", {
+      opacity: 0,
+      y: -10,
+      stagger: 0.1,
+      duration: 0.4,
+      delay: 0.2,
+      ease: "power2.out"
+    });
+  }, { scope: headerRef });
+
   return (
-    <header className="top-header">
+    <header className="top-header" ref={headerRef}>
       <div className="header-content">
         <div className="header-left">
           {onMenuClick && (

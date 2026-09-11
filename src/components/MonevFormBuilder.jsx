@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { PlusCircle, Trash2, Settings, Type, Hash, List, CheckSquare, Upload, CheckCircle2, ChevronDown, ChevronUp, X, Calendar, Clock, MapPin } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import './MonevFormBuilder.css';
 
 const QUESTION_TYPES = [
@@ -39,6 +41,19 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
   const [menuOptions, setMenuOptions] = useState(DEFAULT_MENU_OPTIONS);
   const [questions, setQuestions] = useState([]);
   const [expandedQId, setExpandedQId] = useState(null);
+
+  const containerRef = React.useRef(null);
+
+  useGSAP(() => {
+    gsap.from(".gsap-slide-up", {
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "back.out(1.5)",
+      clearProps: "all"
+    });
+  }, { scope: containerRef });
 
   const addQuestion = (typeId) => {
     const newQ = {
@@ -190,7 +205,7 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
   };
 
   return (
-    <div className="mfb-container animate-fade-in slide-up-1">
+    <div className="mfb-container gsap-slide-up" ref={containerRef}>
       <div className="mfb-header glass">
         <div className="mfb-header-content">
           <h2>Buat Program Monev Baru</h2>
@@ -206,7 +221,7 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
 
       <div className="mfb-layout">
         {/* Form Metadata */}
-        <div className="mfb-meta-card glass slide-up-2">
+        <div className="mfb-meta-card glass gsap-slide-up">
           <div className="mfb-input-group">
             <label>Judul Program Monev</label>
             <input 
@@ -229,7 +244,7 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
         </div>
 
         {/* Menu Options Configuration */}
-        <div className="mfb-meta-card glass slide-up-2 mt-1">
+        <div className="mfb-meta-card glass gsap-slide-up mt-1">
           <div className="mfb-input-group">
             <label>Konfigurasi Kategori Menu Dokumentasi (Dropdown)</label>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
@@ -274,7 +289,7 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
             const TypeIcon = QUESTION_TYPES.find(t => t.id === q.type)?.icon || Type;
 
             return (
-              <div key={q.id} className={`mfb-q-card glass slide-up-2 ${isExpanded ? 'expanded' : ''}`}>
+              <div key={q.id} className={`mfb-q-card glass gsap-slide-up ${isExpanded ? 'expanded' : ''}`}>
                 
                 {/* Compact View / Header */}
                 <div className="mfb-q-header" onClick={() => setExpandedQId(isExpanded ? null : q.id)}>
@@ -530,7 +545,7 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
         </div>
 
         {/* Add Question Palette */}
-        <div className="mfb-add-palette glass slide-up-3">
+        <div className="mfb-add-palette glass gsap-slide-up">
           <h3>Tambah Pertanyaan Baru</h3>
           <div className="palette-grid">
             {QUESTION_TYPES.map(qt => (

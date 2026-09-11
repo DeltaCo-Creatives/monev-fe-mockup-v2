@@ -1,10 +1,24 @@
 import React from 'react';
 import { Layers, ChevronRight, ChevronLeft, CheckCircle2 } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import './Step2CategorySelect.css';
 
 const Step2CategorySelect = ({ selectedCategory, setSelectedCategory, onNext, onBack, categoriesData }) => {
+  const containerRef = React.useRef(null);
+  useGSAP(() => {
+    gsap.from(".gsap-slide-up", {
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "back.out(1.5)",
+      clearProps: "all"
+    });
+  }, { scope: containerRef });
+
   return (
-    <div className="wizard-step-card animate-fade-in glass">
+    <div className="wizard-step-card gsap-slide-up glass" ref={containerRef}>
       <div className="step-header">
         <h2>Pilih Kategori Monev</h2>
         <p>Silakan pilih jenis monitoring dan evaluasi yang akan Anda laporkan untuk sekolah ini.</p>
