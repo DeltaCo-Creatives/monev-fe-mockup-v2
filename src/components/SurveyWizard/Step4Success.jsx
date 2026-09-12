@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import './Step4Success.css';
 
-const Step4Success = ({ school, category, onReset }) => {
+const Step4Success = ({ categoriesData, onReset }) => {
+  const { npsn, categoryId } = useParams();
+  const [school, setSchool] = useState(null);
+  const [category, setCategory] = useState(null);
+  
+  useEffect(() => {
+    const cat = categoriesData.find(c => c.id === categoryId);
+    setCategory(cat);
+    
+    fetch('/schools.json').then(r => r.json()).then(data => {
+       const found = data.find(s => s.NPSN === npsn);
+       if (found) setSchool(found);
+    }).catch(err => console.error("Error fetching school", err));
+  }, [npsn, categoryId, categoriesData]);
+
   const containerRef = React.useRef(null);
   useGSAP(() => {
     gsap.fromTo(".success-card", 

@@ -1,18 +1,94 @@
 import React, { useState, useEffect, useMemo, startTransition } from 'react';
 import { Layers, Building2, Target, CheckCircle2, AlertCircle, Search, FileText, ChevronRight, BarChart3, PieChart as PieChartIcon } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
-import PaginationControl from './PaginationControl';
-import useDebounce from '../hooks/useDebounce';
+import PaginationControl from '../components/PaginationControl';
+import DebouncedSearchInput from '../components/DebouncedSearchInput';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
-const PejabatDashboardView = ({ categoriesData, schoolsData, setDetailedSchool }) => {
-  const [selectedCatId, setSelectedCatId] = useState(categoriesData[0]?.id);
+const MemoizedAnalyticsGrid = React.memo(({ chartData, completionRate, stats, regionalData }) => {
+  return (
+    <div className="analytics-grid">
+      {/* Left: Overall Progress (Donut Chart) */}
+      <div className="analytics-card glass">
+        <div className="card-title">
+          <PieChartIcon size={18} />
+          <h4>Progres Keseluruhan</h4>
+        </div>
+        <div className="chart-wrapper">
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={chartData}
+                cx="50%"
+                cy="50%"
+                innerRadius={70}
+                outerRadius={95}
+                paddingAngle={5}
+                dataKey="value"
+                stroke="none"
+              >
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip 
+                contentStyle={{ borderRadius: '12px', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-lg)', backgroundColor: 'var(--bg-card)' }}
+                itemStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="chart-center-label">
+            <h2>{completionRate}%</h2>
+            <span>Tercapai</span>
+          </div>
+        </div>
+        <div className="cat-progress-legend">
+          <div className="legend-item">
+            <div className="legend-color" style={{ backgroundColor: 'var(--accent-green)'}}></div>
+            <span>Sudah Survei: <strong>{stats.completedSurveys.toLocaleString('id-ID')}</strong></span>
+          </div>
+          <div className="legend-item">
+            <div className="legend-color" style={{ backgroundColor: 'var(--accent-orange)'}}></div>
+            <span>Belum Survei: <strong>{stats.pendingSurveys.toLocaleString('id-ID')}</strong></span>
+          </div>
+        </div>
+      </div>
+
+      {/* Right: Regional Progress (Bar Chart) */}
+      <div className="analytics-card glass">
+        <div className="card-title">
+          <BarChart3 size={18} />
+          <h4>Sebaran Wilayah</h4>
+        </div>
+        <div className="bar-chart-wrapper" style={{ height: '300px', marginTop: '1rem' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={regionalData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
+              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+              <Tooltip 
+                cursor={{ fill: 'rgba(0,0,0,0.05)' }}
+                contentStyle={{ borderRadius: '8px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-card)' }}
+              />
+              <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }}/>
+              <Bar dataKey="selesai" name="Selesai" stackId="a" fill="var(--accent-green)" radius={[0, 0, 4, 4]} />
+              <Bar dataKey="belum" name="Belum" stackId="a" fill="var(--accent-orange)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const selectedCatId = searchParams.get('category') || categoriesData[0]?.id;
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('ALL'); // 'ALL', 'KENDALA', 'SELESAI'
+  const statusFilter = searchParams.get('status') || 'ALL';
   const [dashboardPage, setDashboardPage] = useState(1);
   const itemsPerPage = 10;
-
-  // Debounce the search term to prevent filtering lag
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const totalCategories = categoriesData.length;
   const totalSchools = categoriesData.reduce((acc, cat) => acc + cat.stats.totalSchools, 0);
@@ -37,7 +113,7 @@ const PejabatDashboardView = ({ categoriesData, schoolsData, setDetailedSchool }
     { name: 'Papua/Maluku', selesai: 50, belum: 80 }
   ];
 
-  // Filter Table Data - Using debouncedSearchTerm
+  // Filter Table Data
   const tableData = useMemo(() => {
     return schoolsData
       .filter(school => school.categoryId === selectedCatId)
@@ -47,16 +123,16 @@ const PejabatDashboardView = ({ categoriesData, schoolsData, setDetailedSchool }
         return true; // 'ALL'
       })
       .filter(school => {
-        if (!debouncedSearchTerm) return true;
-        return school.nama.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) || 
-               school.npsn.includes(debouncedSearchTerm) ||
-               school.provinsi.toLowerCase().includes(debouncedSearchTerm.toLowerCase());
+        if (!searchTerm) return true;
+        return school.nama.toLowerCase().includes(searchTerm.toLowerCase()) || 
+               school.npsn.includes(searchTerm) ||
+               school.provinsi.toLowerCase().includes(searchTerm.toLowerCase());
       });
-  }, [schoolsData, selectedCatId, statusFilter, debouncedSearchTerm]);
+  }, [schoolsData, selectedCatId, statusFilter, searchTerm]);
 
   useEffect(() => {
     setDashboardPage(1);
-  }, [debouncedSearchTerm, selectedCatId, statusFilter]);
+  }, [searchTerm, selectedCatId, statusFilter]);
 
   const totalDashboardPages = Math.ceil(tableData.length / itemsPerPage);
   const currentDashboardPage = Math.min(Math.max(1, dashboardPage), Math.max(1, totalDashboardPages));
@@ -105,8 +181,10 @@ const PejabatDashboardView = ({ categoriesData, schoolsData, setDetailedSchool }
             key={cat.id} 
             className={`category-select-card glass ${selectedCatId === cat.id ? 'active' : ''}`}
             onClick={() => {
-              setSelectedCatId(cat.id);
-              setStatusFilter('ALL'); // Reset filter on category change
+              const newParams = new URLSearchParams(searchParams);
+              newParams.set('category', cat.id);
+              newParams.set('status', 'ALL');
+              setSearchParams(newParams);
             }}
           >
             <div className="card-header">
@@ -126,84 +204,22 @@ const PejabatDashboardView = ({ categoriesData, schoolsData, setDetailedSchool }
       {selectedCat && (
         <div className="category-dashboard gsap-slide-up">
           
-          <div className="analytics-grid">
-            
-            {/* Left: Overall Progress (Donut Chart) */}
-            <div className="analytics-card glass">
-              <div className="card-title">
-                <PieChartIcon size={18} />
-                <h4>Progres Keseluruhan</h4>
-              </div>
-              <div className="chart-wrapper">
-                <ResponsiveContainer width="100%" height={250}>
-                  <PieChart>
-                    <Pie
-                      data={chartData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={70}
-                      outerRadius={95}
-                      paddingAngle={5}
-                      dataKey="value"
-                      stroke="none"
-                    >
-                      {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '12px', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-lg)', backgroundColor: 'var(--bg-card)' }}
-                      itemStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="chart-center-label">
-                  <h2>{completionRate}%</h2>
-                  <span>Tercapai</span>
-                </div>
-              </div>
-              <div className="cat-progress-legend">
-                <div className="legend-item">
-                  <div className="legend-color" style={{ backgroundColor: 'var(--accent-green)'}}></div>
-                  <span>Sudah Survei: <strong>{stats.completedSurveys.toLocaleString('id-ID')}</strong></span>
-                </div>
-                <div className="legend-item">
-                  <div className="legend-color" style={{ backgroundColor: 'var(--accent-orange)'}}></div>
-                  <span>Belum Survei: <strong>{stats.pendingSurveys.toLocaleString('id-ID')}</strong></span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Regional Progress (Bar Chart) */}
-            <div className="analytics-card glass">
-              <div className="card-title">
-                <BarChart3 size={18} />
-                <h4>Sebaran Wilayah</h4>
-              </div>
-              <div className="bar-chart-wrapper" style={{ height: '300px', marginTop: '1rem' }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={regionalData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                    <Tooltip 
-                      cursor={{ fill: 'rgba(0,0,0,0.05)' }}
-                      contentStyle={{ borderRadius: '8px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-card)' }}
-                    />
-                    <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }}/>
-                    <Bar dataKey="selesai" name="Selesai" stackId="a" fill="var(--accent-green)" radius={[0, 0, 4, 4]} />
-                    <Bar dataKey="belum" name="Belum" stackId="a" fill="var(--accent-orange)" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
+          <MemoizedAnalyticsGrid 
+            chartData={chartData} 
+            completionRate={completionRate} 
+            stats={stats} 
+            regionalData={regionalData} 
+          />
           
           {/* Quick Metrics Row - Now Clickable Filters */}
           <div className="quick-metrics-row">
             <div 
               className={`cat-stat-card glass gsap-slide-up clickable-metric ${statusFilter === 'ALL' ? 'active-metric-filter' : ''}`}
-              onClick={() => setStatusFilter('ALL')}
+              onClick={() => {
+                const newParams = new URLSearchParams(searchParams);
+                newParams.set('status', 'ALL');
+                setSearchParams(newParams);
+              }}
             >
               <Target size={24} color="var(--accent-blue)" className="metric-icon" />
               <div className="cat-stat-data">
@@ -214,7 +230,11 @@ const PejabatDashboardView = ({ categoriesData, schoolsData, setDetailedSchool }
             <div 
               className={`cat-stat-card glass gsap-slide-up clickable-metric ${statusFilter === 'KENDALA' ? 'active-metric-filter' : ''}`} 
               style={{ animationDelay: '0.1s' }}
-              onClick={() => setStatusFilter('KENDALA')}
+              onClick={() => {
+                const newParams = new URLSearchParams(searchParams);
+                newParams.set('status', 'KENDALA');
+                setSearchParams(newParams);
+              }}
             >
               <AlertCircle size={24} color="var(--accent-red)" className="metric-icon" />
               <div className="cat-stat-data">
@@ -225,7 +245,11 @@ const PejabatDashboardView = ({ categoriesData, schoolsData, setDetailedSchool }
             <div 
               className={`cat-stat-card glass gsap-slide-up clickable-metric ${statusFilter === 'SELESAI' ? 'active-metric-filter' : ''}`} 
               style={{ animationDelay: '0.2s' }}
-              onClick={() => setStatusFilter('SELESAI')}
+              onClick={() => {
+                const newParams = new URLSearchParams(searchParams);
+                newParams.set('status', 'SELESAI');
+                setSearchParams(newParams);
+              }}
             >
               <CheckCircle2 size={24} color="var(--accent-green)" className="metric-icon" />
               <div className="cat-stat-data">
@@ -243,15 +267,14 @@ const PejabatDashboardView = ({ categoriesData, schoolsData, setDetailedSchool }
                 <h3>Rincian Data Sekolah ({selectedCat.name}) {statusFilter !== 'ALL' && <span className="filter-badge">({statusFilter})</span>}</h3>
               </div>
               <div className="grid-search">
-                <Search size={16} className="search-icon" />
-                <input 
-                  type="text" 
-                  className="form-input premium-input search-input" 
-                  placeholder="Cari sekolah..." 
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
+              <DebouncedSearchInput 
+                className="form-input premium-input search-input" 
+                placeholder="Cari sekolah..." 
+                value={searchTerm}
+                onChange={setSearchTerm}
+                delay={300}
+              />
+            </div>
             </div>
 
             <div className="table-responsive">
@@ -270,7 +293,7 @@ const PejabatDashboardView = ({ categoriesData, schoolsData, setDetailedSchool }
                 <tbody>
                   {paginatedTableData.length > 0 ? (
                     paginatedTableData.map(school => (
-                      <tr key={school.id} onClick={() => setDetailedSchool(school)} className="clickable-row">
+                      <tr key={school.id} onClick={() => navigate(`school/${school.npsn}`)} className="clickable-row">
                         <td className="font-mono">{school.npsn}</td>
                         <td className="fw-bold">{school.nama}</td>
                         <td>{school.kabupaten}, {school.provinsi}</td>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import './PejabatFramework.css';
 import SchoolDetailFullView from '../components/SchoolDetailFullView';
@@ -10,17 +10,28 @@ import MonevDataViewer from '../components/MonevDataViewer';
 import PejabatDashboardView from './PejabatDashboardView';
 import PejabatManagementView from './PejabatManagementView';
 
+const SchoolDetailRoute = ({ schoolsData }) => {
+  const { npsn } = useParams();
+  const navigate = useNavigate();
+  const school = schoolsData.find(s => s.npsn === npsn);
+
+  if (!school) {
+    return <div style={{ padding: '3rem', textAlign: 'center' }}>Data sekolah tidak ditemukan.</div>;
+  }
+
+  return <SchoolDetailFullView school={school} onBack={() => navigate(-1)} />;
+};
+
 const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesData, setCategoriesData, schoolsData, setSchoolsData, onLogout }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const getTitle = () => {
+    if (location.pathname.includes('school/')) return 'Detail Sekolah';
     if (location.pathname.includes('management')) return 'Manajemen Status Sekolah';
     if (location.pathname.includes('create')) return 'Buat Program Monev';
     if (location.pathname.includes('data')) return 'Data & Ekspor';
     return 'Command Center (Directorate)';
   };
-
-  const [detailedSchool, setDetailedSchool] = useState(null);
 
   const handleCreateCategory = (newCategory) => {
     setCategoriesData(prev => [newCategory, ...prev]);
@@ -58,23 +69,29 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
     <>
       <Layout role={role} setRole={setRole} title={getTitle()} debugMode={debugMode} setDebugMode={setDebugMode} onLogout={onLogout}>
         <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', flex: 1 }}>
-        {detailedSchool ? (
-          <SchoolDetailFullView school={detailedSchool} onBack={() => setDetailedSchool(null)} />
-        ) : (
           <Routes>
-            <Route path="dashboard" element={
-              <PejabatDashboardView 
-                categoriesData={categoriesData} 
-                schoolsData={schoolsData} 
-                setDetailedSchool={setDetailedSchool} 
-              />
+            <Route path="dashboard/*" element={
+              <Routes>
+                <Route path="school/:npsn" element={<SchoolDetailRoute schoolsData={schoolsData} />} />
+                <Route path="*" element={
+                  <PejabatDashboardView 
+                    categoriesData={categoriesData} 
+                    schoolsData={schoolsData} 
+                  />
+                } />
+              </Routes>
             } />
-            <Route path="management" element={
-              <PejabatManagementView 
-                categoriesData={categoriesData} 
-                schoolsData={schoolsData} 
-                handleStatusChange={handleStatusChange} 
-              />
+            <Route path="management/*" element={
+              <Routes>
+                <Route path="school/:npsn" element={<SchoolDetailRoute schoolsData={schoolsData} />} />
+                <Route path="*" element={
+                  <PejabatManagementView 
+                    categoriesData={categoriesData} 
+                    schoolsData={schoolsData} 
+                    handleStatusChange={handleStatusChange} 
+                  />
+                } />
+              </Routes>
             } />
             <Route path="create" element={
               <MonevFormBuilder 
@@ -90,7 +107,6 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
             } />
             <Route path="*" element={<Navigate to="dashboard" replace />} />
           </Routes>
-        )}
         </div>
       </Layout>
     </>

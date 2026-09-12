@@ -1,30 +1,30 @@
 import React, { useState, useEffect, useMemo, startTransition } from 'react';
 import { Search } from 'lucide-react';
-import PaginationControl from './PaginationControl';
-import useDebounce from '../hooks/useDebounce';
+import PaginationControl from '../components/PaginationControl';
+import DebouncedSearchInput from '../components/DebouncedSearchInput';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 const PejabatManagementView = ({ categoriesData, schoolsData, handleStatusChange }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [managementSearchTerm, setManagementSearchTerm] = useState('');
-  const [managementCatFilter, setManagementCatFilter] = useState('ALL');
+  const managementCatFilter = searchParams.get('category') || 'ALL';
   const [managementPage, setManagementPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Debounce the search term to prevent filtering lag
-  const debouncedSearchTerm = useDebounce(managementSearchTerm, 300);
-
   useEffect(() => {
     setManagementPage(1);
-  }, [debouncedSearchTerm, managementCatFilter]);
+  }, [managementSearchTerm, managementCatFilter]);
 
   const managementFilteredData = useMemo(() => {
     return schoolsData
       .filter(s => managementCatFilter === 'ALL' || s.categoryId === managementCatFilter)
       .filter(s => {
-        if (!debouncedSearchTerm) return true;
-        return s.nama.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) || 
-               s.npsn.includes(debouncedSearchTerm);
+        if (!managementSearchTerm) return true;
+        return s.nama.toLowerCase().includes(managementSearchTerm.toLowerCase()) || 
+               s.npsn.includes(managementSearchTerm);
       });
-  }, [schoolsData, managementCatFilter, debouncedSearchTerm]);
+  }, [schoolsData, managementCatFilter, managementSearchTerm]);
     
   const totalManagementPages = Math.ceil(managementFilteredData.length / itemsPerPage);
   const currentManagementPage = Math.min(Math.max(1, managementPage), Math.max(1, totalManagementPages));
@@ -52,19 +52,22 @@ const PejabatManagementView = ({ categoriesData, schoolsData, handleStatusChange
         <div className="grid-header">
           <div className="grid-search" style={{ display: 'flex', gap: '1rem', width: '100%', maxWidth: 'none' }}>
             <div style={{ position: 'relative', flex: 1 }}>
-              <Search size={16} className="search-icon" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-              <input 
-                type="text" 
+              <DebouncedSearchInput 
                 className="form-input premium-input search-input" 
                 placeholder="Cari sekolah..." 
                 value={managementSearchTerm}
-                onChange={(e) => setManagementSearchTerm(e.target.value)}
+                onChange={setManagementSearchTerm}
+                delay={300}
                 style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none' }}
               />
             </div>
             <select 
               value={managementCatFilter}
-              onChange={(e) => setManagementCatFilter(e.target.value)}
+              onChange={(e) => {
+                const newParams = new URLSearchParams(searchParams);
+                newParams.set('category', e.target.value);
+                setSearchParams(newParams);
+              }}
               style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', cursor: 'pointer' }}
             >
               <option value="ALL">Semua Kategori Program</option>
@@ -87,12 +90,12 @@ const PejabatManagementView = ({ categoriesData, schoolsData, handleStatusChange
             <tbody>
               {paginatedManagementData
                 .map(school => (
-                  <tr key={school.id}>
+                  <tr key={school.id} onClick={() => navigate(`school/${school.npsn}`)} className="clickable-row">
                     <td className="font-mono">{school.npsn}</td>
                     <td className="fw-bold">{school.nama}</td>
                     <td>{categoriesData.find(c => c.id === school.categoryId)?.name}</td>
                     <td>{getStatusBadge(school.status)}</td>
-                    <td>
+                    <td onClick={(e) => e.stopPropagation()}>
                       <select 
                         className="status-override-select"
                         value={school.status}

@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Layers, ChevronRight, ChevronLeft, CheckCircle2 } from 'lucide-react';
 import './Step2CategorySelect.css';
 
-const Step2CategorySelect = ({ selectedCategory, setSelectedCategory, onNext, onBack, categoriesData }) => {
+const Step2CategorySelect = ({ onNext, onBack, categoriesData }) => {
+  const { npsn } = useParams();
+  const [selectedCategory, setSelectedCategory] = useState(null);
   return (
     <div className="wizard-step-card gsap-slide-up glass">
       <div className="step-header">
@@ -40,7 +43,7 @@ const Step2CategorySelect = ({ selectedCategory, setSelectedCategory, onNext, on
         <button 
           className="btn-primary" 
           disabled={!selectedCategory} 
-          onClick={onNext}
+          onClick={() => onNext(npsn, selectedCategory.id)}
         >
           Lanjut Isi Instrumen <ChevronRight size={18} />
         </button>

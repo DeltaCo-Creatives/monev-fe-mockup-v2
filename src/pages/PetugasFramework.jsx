@@ -20,7 +20,7 @@ const PetugasFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
     >
       <div className="petugas-dashboard-container">
         <Routes>
-          <Route path="survei" element={
+          <Route path="survei/*" element={
             <SurveyWizard
               debugMode={debugMode}
               categoriesData={categoriesData}

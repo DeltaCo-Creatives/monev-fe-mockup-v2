@@ -1,8 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, FileText, Building, UploadCloud, AlertTriangle, User, Info, FileSpreadsheet, MapPin } from 'lucide-react';
 import './Step3Form.css';
 
-const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
+const Step3Form = ({ debugMode, categoriesData, onNext, onBack }) => {
+  const { npsn, categoryId } = useParams();
+  const [school, setSchool] = useState(null);
+  const [category, setCategory] = useState(null);
+  
+  useEffect(() => {
+    const cat = categoriesData.find(c => c.id === categoryId);
+    setCategory(cat);
+    
+    fetch('/schools.json').then(r => r.json()).then(data => {
+       const found = data.find(s => s.NPSN === npsn);
+       if (found) setSchool(found);
+    }).catch(err => console.error("Error fetching school", err));
+  }, [npsn, categoryId, categoriesData]);
+
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [hasCriticalIssue, setHasCriticalIssue] = useState(false);
@@ -287,9 +302,11 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
     }
 
     setTimeout(() => {
-      onNext({ hasCriticalIssue, answers });
+      onNext(school, category, { hasCriticalIssue, answers });
     }, 500);
   };
+
+  if (!school || !category) return <div style={{ padding: '3rem', textAlign: 'center' }}>Memuat data...</div>;
 
   return (
     <>

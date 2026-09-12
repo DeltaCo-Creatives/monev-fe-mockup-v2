@@ -78,14 +78,14 @@
 }
 
 .sdfs-content-wrapper {
-  display: grid;
-  grid-template-columns: 300px 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
 @media (max-width: 1024px) {
   .sdfs-content-wrapper {
-    grid-template-columns: 1fr;
+    /* No change needed for mobile if it's already a flex column */
   }
 }
 
@@ -113,14 +113,17 @@
   padding: 0;
   margin: 0;
   display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2rem;
 }
 
 .sdfs-info-list li {
   display: flex;
   gap: 1rem;
   align-items: flex-start;
+  flex: 1;
+  min-width: 200px;
 }
 
 .sdfs-info-list li .icon {
@@ -147,6 +150,8 @@
   padding: 1rem;
   border-radius: 8px;
   border-left: 3px solid #ef4444;
+  flex: 100%; /* force kendala to take full width if present */
+  min-width: 100%;
 }
 
 .error-color {
@@ -169,7 +174,7 @@
 }
 
 .sdfs-tabs button {
-  flex: 1;
+  flex: 1 1 0%;
   padding: 0.75rem 1rem;
   background: transparent;
   border: none;
@@ -178,6 +183,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .sdfs-tabs button:hover {

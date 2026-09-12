@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { PlusCircle, Trash2, Settings, Type, Hash, List, CheckSquare, Upload, CheckCircle2, ChevronDown, ChevronUp, X, Calendar, Clock, MapPin } from 'lucide-react';
 import './MonevFormBuilder.css';
 
@@ -39,7 +39,7 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
   const [menuOptions, setMenuOptions] = useState(DEFAULT_MENU_OPTIONS);
   const [questions, setQuestions] = useState([]);
   const [expandedQId, setExpandedQId] = useState(null);
-
+  const containerRef = useRef(null);
 
   const addQuestion = (typeId) => {
     const newQ = {

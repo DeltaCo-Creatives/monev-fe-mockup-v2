@@ -4,9 +4,11 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import SearchWorker from '../../workers/schoolSearchWorker?worker';
 import PaginationControl from '../PaginationControl';
+import DebouncedSearchInput from '../DebouncedSearchInput'; // Added import
 import './Step1SchoolSearch.css';
 
-const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
+const Step1SchoolSearch = ({ onNext }) => {
+  const [selectedSchool, setSelectedSchool] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [regionFilter, setRegionFilter] = useState('');
   const [cityFilter, setCityFilter] = useState('');
@@ -50,19 +52,19 @@ const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
     };
   }, []);
 
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const debounceTimer = React.useRef(null);
-
-  const handleSearchChange = (e) => {
-    const val = e.target.value;
-    setSearchTerm(val);
-    clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => {
-      startTransition(() => setDebouncedSearch(val));
-    }, 250);
-  };
-
-  React.useEffect(() => () => clearTimeout(debounceTimer.current), []);
+  React.useEffect(() => {
+    if (isDataLoaded && workerRef.current) {
+      setIsSearching(true);
+      workerRef.current.postMessage({
+        type: 'SEARCH',
+        payload: {
+          searchTerm: searchTerm, // this is now already debounced by DebouncedSearchInput
+          regionFilter,
+          cityFilter
+        }
+      });
+    }
+  }, [searchTerm, regionFilter, cityFilter, isDataLoaded]);
 
   const cities = useMemo(() => {
     if (regionFilter) {
@@ -76,19 +78,7 @@ const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
     setCityFilter('');
   };
 
-  React.useEffect(() => {
-    if (isDataLoaded && workerRef.current) {
-      setIsSearching(true);
-      workerRef.current.postMessage({
-        type: 'SEARCH',
-        payload: {
-          searchTerm: debouncedSearch,
-          regionFilter,
-          cityFilter
-        }
-      });
-    }
-  }, [debouncedSearch, regionFilter, cityFilter, isDataLoaded]);
+
 
   const totalPages = Math.ceil(filteredSchools.length / itemsPerPage);
   const paginatedSchools = useMemo(() => {
@@ -159,12 +149,11 @@ const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
           </div>
 
           <div style={{ position: 'relative', width: '300px' }}>
-            <Search size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-            <input 
-              type="text" 
+            <DebouncedSearchInput 
               placeholder="Cari NPSN atau Nama..." 
               value={searchTerm}
-              onChange={handleSearchChange}
+              onChange={setSearchTerm}
+              delay={300}
               style={{ width: '100%', padding: '0.6rem 1rem 0.6rem 2.5rem', borderRadius: '50px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', fontSize: '0.9rem' }}
             />
           </div>
@@ -264,7 +253,7 @@ const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
         <button 
           className="btn-primary" 
           disabled={!selectedSchool} 
-          onClick={onNext}
+          onClick={() => onNext(selectedSchool)}
           style={{ padding: '0.75rem 2rem', borderRadius: '50px' }} // Pill shape button
         >
           Lanjut Pilih Kategori <ChevronRight size={18} />

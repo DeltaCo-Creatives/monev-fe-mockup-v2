@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ArrowLeft, MapPin, Calendar, User, CheckCircle2, AlertCircle, Clock, FileSpreadsheet, Building } from 'lucide-react';
 import AdvancedImageViewer from './AdvancedImageViewer';
 import categoriesDataRaw from '../data/categories.json';
@@ -6,6 +6,7 @@ import './SchoolDetailFullView.css';
 
 const SchoolDetailFullView = ({ school, onBack }) => {
   const [activeTab, setActiveTab] = useState('instrumen'); // 'instrumen', 'dokumen', 'foto'
+  const containerRef = useRef(null);
 
   const category = categoriesDataRaw.find(c => c.id === school.categoryId);
 
@@ -117,8 +118,8 @@ const SchoolDetailFullView = ({ school, onBack }) => {
                             {/* Mocking Answers based on type */}
                             {q.type === 'boolean' ? (
                               <span style={{ color: 'var(--accent-green)' }}>Sudah / Sesuai</span>
-                            ) : q.type === 'select' ? (
-                              q.options[Math.floor(Math.random() * q.options.length)]
+                            ) : q.type === 'select' || q.type === 'multiselect' ? (
+                              q.config?.options?.length > 0 ? q.config.options[Math.floor(Math.random() * q.config.options.length)] : 'Data terpilih'
                             ) : (
                               'Data terisi dari lapangan'
                             )}
