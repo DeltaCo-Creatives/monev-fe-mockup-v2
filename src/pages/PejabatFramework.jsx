@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, startTransition } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Layers, Building2, Target, CheckCircle2, AlertCircle, Search, FileText, ChevronRight, BarChart3, PieChart as PieChartIcon, X, MapPin, Calendar, User, FileSpreadsheet, Image as ImageIcon } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
 import './PejabatFramework.css';
 import SchoolDetailFullView from '../components/SchoolDetailFullView';
 import MonevFormBuilder from '../components/MonevFormBuilder';
@@ -89,18 +87,20 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
   ];
 
   // Filter Table Data
-  const tableData = schoolsData
-    .filter(school => school.categoryId === selectedCatId)
-    .filter(school => {
-      if (statusFilter === 'KENDALA') return school.status === 'Kendala';
-      if (statusFilter === 'SELESAI') return school.status === 'Selesai';
-      return true; // 'ALL'
-    })
-    .filter(school => 
-      school.nama.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      school.npsn.includes(searchTerm) ||
-      school.provinsi.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  const tableData = useMemo(() => {
+    return schoolsData
+      .filter(school => school.categoryId === selectedCatId)
+      .filter(school => {
+        if (statusFilter === 'KENDALA') return school.status === 'Kendala';
+        if (statusFilter === 'SELESAI') return school.status === 'Selesai';
+        return true; // 'ALL'
+      })
+      .filter(school => 
+        school.nama.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        school.npsn.includes(searchTerm) ||
+        school.provinsi.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+  }, [schoolsData, selectedCatId, statusFilter, searchTerm]);
 
   useEffect(() => {
     setDashboardPage(1);
@@ -133,31 +133,22 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
     setManagementPage(1);
   }, [managementSearchTerm, managementCatFilter]);
 
-  const managementFilteredData = schoolsData
-    .filter(s => managementCatFilter === 'ALL' || s.categoryId === managementCatFilter)
-    .filter(s => s.nama.toLowerCase().includes(managementSearchTerm.toLowerCase()) || s.npsn.includes(managementSearchTerm));
+  const managementFilteredData = useMemo(() => {
+    return schoolsData
+      .filter(s => managementCatFilter === 'ALL' || s.categoryId === managementCatFilter)
+      .filter(s => s.nama.toLowerCase().includes(managementSearchTerm.toLowerCase()) || s.npsn.includes(managementSearchTerm));
+  }, [schoolsData, managementCatFilter, managementSearchTerm]);
     
   const totalManagementPages = Math.ceil(managementFilteredData.length / itemsPerPage);
   const currentManagementPage = Math.min(Math.max(1, managementPage), Math.max(1, totalManagementPages));
-  const paginatedManagementData = managementFilteredData.slice((currentManagementPage - 1) * itemsPerPage, currentManagementPage * itemsPerPage);
-
-  const containerRef = React.useRef(null);
-
-  useGSAP(() => {
-    gsap.from(".gsap-slide-up", {
-      y: 40,
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: "back.out(1.5)",
-      clearProps: "all"
-    });
-  }, { dependencies: [location.pathname, selectedCatId, statusFilter], scope: containerRef });
+  const paginatedManagementData = useMemo(() => {
+    return managementFilteredData.slice((currentManagementPage - 1) * itemsPerPage, currentManagementPage * itemsPerPage);
+  }, [managementFilteredData, currentManagementPage, itemsPerPage]);
 
   return (
     <>
       <Layout role={role} setRole={setRole} title={getTitle()} debugMode={debugMode} setDebugMode={setDebugMode} onLogout={onLogout}>
-        <div ref={containerRef} style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', flex: 1 }}>
         {detailedSchool ? (
           <SchoolDetailFullView school={detailedSchool} onBack={() => setDetailedSchool(null)} />
         ) : (
@@ -335,9 +326,10 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
                   <Search size={16} className="search-icon" />
                   <input 
                     type="text" 
-                    placeholder="Cari NPSN, Nama, atau Wilayah..." 
+                    className="form-input premium-input search-input" 
+                    placeholder="Cari sekolah..." 
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => startTransition(() => setSearchTerm(e.target.value))}
                   />
                 </div>
               </div>
@@ -410,9 +402,10 @@ const PejabatFramework = ({ role, setRole, debugMode, setDebugMode, categoriesDa
                     <Search size={16} className="search-icon" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
                     <input 
                       type="text" 
-                      placeholder="Cari berdasarkan NPSN atau Nama Sekolah..." 
+                      className="form-input premium-input search-input" 
+                      placeholder="Cari sekolah..." 
                       value={managementSearchTerm}
-                      onChange={(e) => setManagementSearchTerm(e.target.value)}
+                      onChange={(e) => startTransition(() => setManagementSearchTerm(e.target.value))}
                       style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none' }}
                     />
                   </div>

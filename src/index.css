@@ -75,7 +75,6 @@ body {
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
@@ -141,3 +140,34 @@ body {
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
+/* ─── Entrance animation ───────────────────────────────────────────
+   Runs on the GPU compositor thread. Zero JS cost.
+   CPU throttle does NOT affect this at all.
+   GSAP is kept only for interactive animations (clicks, dark mode).
+──────────────────────────────────────────────────────────────────── */
+@keyframes revealSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gsap-slide-up {
+  animation: revealSlideUp 0.3s ease both;
+}
+
+/* Stagger children of a container via CSS — still zero JS */
+.gsap-slide-up:nth-child(1)  { animation-delay: 0.00s; }
+.gsap-slide-up:nth-child(2)  { animation-delay: 0.04s; }
+.gsap-slide-up:nth-child(3)  { animation-delay: 0.08s; }
+.gsap-slide-up:nth-child(4)  { animation-delay: 0.12s; }
+.gsap-slide-up:nth-child(5)  { animation-delay: 0.16s; }
+.gsap-slide-up:nth-child(6)  { animation-delay: 0.20s; }
+.gsap-slide-up:nth-child(7)  { animation-delay: 0.24s; }
+.gsap-slide-up:nth-child(8)  { animation-delay: 0.28s; }
+.gsap-slide-up:nth-child(n+9) { animation-delay: 0.32s; }

@@ -6,35 +6,76 @@ import './Header.css';
 
 const Header = ({ title, role, setRole, debugMode, setDebugMode, onMenuClick }) => {
   const [isDark, setIsDark] = useState(false);
+  const overlayRef = React.useRef(null);
+  const isAnimating = React.useRef(false);
 
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDark]);
+  const handleThemeToggle = () => {
+    if (isAnimating.current) return;
+    isAnimating.current = true;
 
-  const headerRef = React.useRef(null);
-  useGSAP(() => {
-    gsap.from(".top-header", {
-      y: -20,
-      opacity: 0,
-      duration: 0.5,
-      ease: "power2.out"
+    const nextIsDark = !isDark;
+    const overlayColor = nextIsDark ? '#0f172a' : '#f4f7f6';
+    const overlay = overlayRef.current;
+
+    // Pre-promote to its own GPU compositor layer BEFORE animation starts
+    gsap.set(overlay, {
+      x: '100%',
+      backgroundColor: overlayColor,
+      display: 'block',
+      willChange: 'transform',
     });
-    gsap.from(".header-left, .header-actions", {
-      opacity: 0,
-      y: -10,
-      stagger: 0.1,
-      duration: 0.4,
-      delay: 0.2,
-      ease: "power2.out"
+
+    // Phase 1: Sweep in from right
+    gsap.to(overlay, {
+      x: '0%',
+      duration: 0.45,
+      ease: 'power3.inOut',
+      onComplete: () => {
+        // Phase 2: Stop in the middle and change the theme
+        if (nextIsDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+
+        // Phase 3: Wait for the browser to FINISH painting the new theme.
+        // requestAnimationFrame fires before the next repaint. 
+        // Nesting two of them guarantees the theme change has been fully painted to the screen.
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            // ONLY exit sweep after we are 100% sure the theme is painted
+            gsap.to(overlay, {
+              x: '-100%',
+              duration: 0.4,
+              ease: 'power3.in',
+              onComplete: () => {
+                // Cleanup
+                setIsDark(nextIsDark);
+                gsap.set(overlay, { display: 'none', willChange: 'auto' });
+                isAnimating.current = false;
+              }
+            });
+          });
+        });
+      }
     });
-  }, { scope: headerRef });
+  };
+
 
   return (
-    <header className="top-header" ref={headerRef}>
+    <>
+      {/* Full-screen wipe overlay for dark mode transition */}
+      <div
+        ref={overlayRef}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 9999,
+          display: 'none',
+          pointerEvents: 'none',
+        }}
+      />
+      <header className="top-header">
       <div className="header-content">
         <div className="header-left">
           {onMenuClick && (
@@ -68,7 +109,13 @@ const Header = ({ title, role, setRole, debugMode, setDebugMode, onMenuClick }) 
           </div>
           <button 
             className="theme-toggle" 
-            onClick={() => setIsDark(!isDark)}
+            onClick={(e) => {
+              gsap.fromTo(e.currentTarget,
+                { rotation: 0, scale: 0.5 },
+                { rotation: 180, scale: 1, duration: 0.5, ease: "back.out(1.5)", clearProps: "transform" }
+              );
+              handleThemeToggle();
+            }}
             title="Toggle Theme"
           >
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
@@ -76,6 +123,7 @@ const Header = ({ title, role, setRole, debugMode, setDebugMode, onMenuClick }) 
         </div>
       </div>
     </header>
+    </>
   );
 };
 

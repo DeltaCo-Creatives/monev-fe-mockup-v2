@@ -7,27 +7,39 @@ import './Step4Success.css';
 const Step4Success = ({ school, category, onReset }) => {
   const containerRef = React.useRef(null);
   useGSAP(() => {
-    gsap.from(".success-card", {
-      scale: 0.8,
-      opacity: 0,
-      duration: 0.6,
-      ease: "back.out(1.5)"
-    });
-    gsap.from(".success-icon-wrapper", {
-      scale: 0,
-      rotation: -180,
-      duration: 0.8,
-      delay: 0.2,
-      ease: "elastic.out(1, 0.5)"
-    });
-    gsap.from(".success-summary > *", {
-      y: 20,
-      opacity: 0,
-      duration: 0.5,
-      stagger: 0.1,
-      delay: 0.4,
-      ease: "power2.out"
-    });
+    gsap.fromTo(".success-card", 
+      { scale: 0.85, opacity: 0 },
+      {
+        scale: 1,
+        opacity: 1,
+        duration: 0.45,
+        ease: "back.out(1.7)",
+        clearProps: "transform,opacity"
+      }
+    );
+    gsap.fromTo(".success-icon-wrapper", 
+      { scale: 0, rotation: -90 },
+      {
+        scale: 1,
+        rotation: 0,
+        duration: 0.5,
+        delay: 0.15,
+        ease: "back.out(2.5)",
+        clearProps: "transform"
+      }
+    );
+    gsap.fromTo(".success-summary > *", 
+      { y: 15, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.35,
+        stagger: 0.07,
+        delay: 0.3,
+        ease: "power2.out",
+        clearProps: "transform,opacity"
+      }
+    );
   }, { scope: containerRef });
 
   return (

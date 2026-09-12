@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Download, Target, Search } from 'lucide-react';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
 import '../pages/PejabatFramework.css';
 
 const MonevDataViewer = ({ categoriesData, schoolsData }) => {
@@ -14,18 +12,6 @@ const MonevDataViewer = ({ categoriesData, schoolsData }) => {
     return <div style={{ padding: '2rem' }}>Tidak ada data kategori Monev.</div>;
   }
 
-  const containerRef = React.useRef(null);
-
-  useGSAP(() => {
-    gsap.from(".gsap-slide-up", {
-      y: 40,
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: "back.out(1.5)",
-      clearProps: "all"
-    });
-  }, { scope: containerRef });
 
   // Get dynamic questions to form columns
   const questions = selectedCategory.questions || [];

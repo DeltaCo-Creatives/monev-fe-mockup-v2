@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, FileText, Building, UploadCloud, AlertTriangle, User, Info, FileSpreadsheet, MapPin } from 'lucide-react';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
 import './Step3Form.css';
 
 const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
@@ -19,18 +17,6 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
   // Custom Validation Errors
   const [errors, setErrors] = useState({});
 
-  const containerRef = React.useRef(null);
-
-  useGSAP(() => {
-    gsap.from(".gsap-slide-up", {
-      y: 40,
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: "back.out(1.5)",
-      clearProps: "all"
-    });
-  }, { scope: containerRef });
 
   const validateInput = (id, type, config, value) => {
     setFormValues(prev => ({...prev, [id]: value}));
@@ -307,7 +293,7 @@ const Step3Form = ({ school, category, debugMode, onNext, onBack }) => {
 
   return (
     <>
-      <div className="wizard-step-card step3-container gsap-slide-up glass" ref={containerRef}>
+      <div className="wizard-step-card step3-container gsap-slide-up glass">
         <div className="step-header">
           <h2>Isi Instrumen & Dokumentasi</h2>
           <p>Lengkapi form instrumen dan unggah foto dokumentasi untuk sekolah yang dipilih.</p>

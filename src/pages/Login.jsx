@@ -18,28 +18,40 @@ const Login = ({ onLogin }) => {
 
   const containerRef = React.useRef(null);
   useGSAP(() => {
-    gsap.from(".login-card", {
-      y: 50,
-      opacity: 0,
-      duration: 0.8,
-      ease: "back.out(1.2)"
-    });
-    gsap.from(".login-logo > *", {
-      y: 20,
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.1,
-      delay: 0.3,
-      ease: "back.out(1.5)"
-    });
-    gsap.from(".login-field, .login-btn", {
-      y: 20,
-      opacity: 0,
-      duration: 0.5,
-      stagger: 0.1,
-      delay: 0.6,
-      ease: "power2.out"
-    });
+    gsap.fromTo(".login-card", 
+      { y: 50, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "back.out(1.2)",
+        clearProps: "transform,opacity"
+      }
+    );
+    gsap.fromTo(".login-logo > *", 
+      { y: 20, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.6,
+        stagger: 0.1,
+        delay: 0.3,
+        ease: "back.out(1.5)",
+        clearProps: "transform,opacity"
+      }
+    );
+    gsap.fromTo(".login-field, .login-btn", 
+      { y: 20, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        stagger: 0.1,
+        delay: 0.6,
+        ease: "power2.out",
+        clearProps: "transform,opacity"
+      }
+    );
   }, { scope: containerRef });
 
   return (

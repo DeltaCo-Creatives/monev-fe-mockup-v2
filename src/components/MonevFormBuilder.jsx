@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { PlusCircle, Trash2, Settings, Type, Hash, List, CheckSquare, Upload, CheckCircle2, ChevronDown, ChevronUp, X, Calendar, Clock, MapPin } from 'lucide-react';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
 import './MonevFormBuilder.css';
 
 const QUESTION_TYPES = [
@@ -42,18 +40,6 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
   const [questions, setQuestions] = useState([]);
   const [expandedQId, setExpandedQId] = useState(null);
 
-  const containerRef = React.useRef(null);
-
-  useGSAP(() => {
-    gsap.from(".gsap-slide-up", {
-      y: 40,
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: "back.out(1.5)",
-      clearProps: "all"
-    });
-  }, { scope: containerRef });
 
   const addQuestion = (typeId) => {
     const newQ = {

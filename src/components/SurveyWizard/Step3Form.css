@@ -225,8 +225,9 @@
   width: 100%;
   padding: 1rem 1.2rem;
   border-radius: var(--radius-md);
-  border: 1px solid #e2e8f0;
-  background-color: #f8fafc;
+  border: 1px solid var(--border-light);
+  background-color: var(--bg-input);
+  color: var(--text-primary);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 1rem;
   box-sizing: border-box;
@@ -235,14 +236,14 @@
 }
 
 .premium-input:hover {
-  border-color: #cbd5e1;
-  background-color: #ffffff;
+  border-color: var(--accent-blue-light);
+  background-color: var(--bg-card-hover);
 }
 
 .premium-input:focus {
   border-color: var(--accent-blue);
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), 0 2px 4px rgba(0,0,0,0.01) inset;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   outline: none;
 }
 
@@ -280,12 +281,12 @@
   padding: 1rem 1.25rem;
   border: 2px solid transparent;
   border-radius: var(--radius-lg);
-  background-color: #f1f5f9;
+  background-color: var(--bg-input);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .premium-radio:hover {
-  background-color: #e2e8f0;
+  background-color: var(--bg-card-hover);
 }
 
 .premium-radio:has(input:checked) {
@@ -319,7 +320,7 @@
 
 .question-block {
   padding: 2rem;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: none;
   border-radius: var(--radius-xl);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -551,14 +552,14 @@ input:disabled + .toggle-slider {
 }
 
 .upload-zone.photo-zone {
-  border: 2px dashed #94a3b8;
+  border: 2px dashed var(--border-light);
   border-radius: var(--radius-sm);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background-color: #f8fafc;
+  background-color: var(--bg-input);
   cursor: pointer;
   transition: all 0.3s ease;
 }

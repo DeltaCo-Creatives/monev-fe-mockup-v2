@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { ArrowLeft, MapPin, Calendar, User, CheckCircle2, AlertCircle, Clock, FileSpreadsheet, Building } from 'lucide-react';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
 import AdvancedImageViewer from './AdvancedImageViewer';
 import categoriesDataRaw from '../data/categories.json';
 import './SchoolDetailFullView.css';
@@ -10,19 +8,6 @@ const SchoolDetailFullView = ({ school, onBack }) => {
   const [activeTab, setActiveTab] = useState('instrumen'); // 'instrumen', 'dokumen', 'foto'
 
   const category = categoriesDataRaw.find(c => c.id === school.categoryId);
-
-  const containerRef = React.useRef(null);
-
-  useGSAP(() => {
-    gsap.from(".gsap-slide-up", {
-      y: 40,
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: "back.out(1.5)",
-      clearProps: "all"
-    });
-  }, { scope: containerRef, dependencies: [activeTab] });
 
   const getStatusBadge = (status) => {
     switch(status) {
