@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, startTransition } from 'react';
 import { ArrowLeft, MapPin, Calendar, User, CheckCircle2, AlertCircle, Clock, FileSpreadsheet, Building } from 'lucide-react';
 import AdvancedImageViewer from './AdvancedImageViewer';
 import categoriesDataRaw from '../data/categories.json';
@@ -89,9 +89,9 @@ const SchoolDetailFullView = ({ school, onBack }) => {
         {/* Right Column: Deep Data */}
         <div className="sdfs-main-content">
           <div className="sdfs-tabs glass">
-            <button className={activeTab === 'instrumen' ? 'active' : ''} onClick={() => setActiveTab('instrumen')}>Data Instrumen</button>
-            <button className={activeTab === 'foto' ? 'active' : ''} onClick={() => setActiveTab('foto')}>Foto & Dokumentasi</button>
-            <button className={activeTab === 'dokumen' ? 'active' : ''} onClick={() => setActiveTab('dokumen')}>Bukti File</button>
+            <button className={activeTab === 'instrumen' ? 'active' : ''} onClick={() => startTransition(() => setActiveTab('instrumen'))}>Data Instrumen</button>
+            <button className={activeTab === 'foto' ? 'active' : ''} onClick={() => startTransition(() => setActiveTab('foto'))}>Foto & Dokumentasi</button>
+            <button className={activeTab === 'dokumen' ? 'active' : ''} onClick={() => startTransition(() => setActiveTab('dokumen'))}>Bukti File</button>
           </div>
 
           <div className="sdfs-tab-content">

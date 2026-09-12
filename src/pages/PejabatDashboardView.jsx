@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis
 import PaginationControl from '../components/PaginationControl';
 import DebouncedSearchInput from '../components/DebouncedSearchInput';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const MemoizedAnalyticsGrid = React.memo(({ chartData, completionRate, stats, regionalData }) => {
   return (
@@ -84,6 +85,7 @@ const MemoizedAnalyticsGrid = React.memo(({ chartData, completionRate, stats, re
 const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [tableRef] = useAutoAnimate();
   const selectedCatId = searchParams.get('category') || categoriesData[0]?.id;
   const [searchTerm, setSearchTerm] = useState('');
   const statusFilter = searchParams.get('status') || 'ALL';
@@ -97,21 +99,21 @@ const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
   const stats = selectedCat ? selectedCat.stats : null;
 
   // Pie Chart Data
-  const chartData = stats ? [
+  const chartData = useMemo(() => stats ? [
     { name: 'Selesai Survei', value: stats.completedSurveys, color: 'var(--accent-green)' },
     { name: 'Belum Survei', value: stats.pendingSurveys, color: 'var(--accent-orange)' }
-  ] : [];
+  ] : [], [stats]);
 
   const completionRate = stats && stats.totalSchools > 0 ? Math.round((stats.completedSurveys / stats.totalSchools) * 100) : 0;
 
   // Mock Bar Chart Data (Regional Progress)
-  const regionalData = [
+  const regionalData = useMemo(() => [
     { name: 'Jawa', selesai: 450, belum: 150 },
     { name: 'Sumatera', selesai: 300, belum: 200 },
     { name: 'Kalimantan', selesai: 150, belum: 100 },
     { name: 'Sulawesi', selesai: 100, belum: 150 },
     { name: 'Papua/Maluku', selesai: 50, belum: 80 }
-  ];
+  ], []);
 
   // Filter Table Data
   const tableData = useMemo(() => {
@@ -218,7 +220,7 @@ const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
               onClick={() => {
                 const newParams = new URLSearchParams(searchParams);
                 newParams.set('status', 'ALL');
-                setSearchParams(newParams);
+                startTransition(() => setSearchParams(newParams));
               }}
             >
               <Target size={24} color="var(--accent-blue)" className="metric-icon" />
@@ -233,7 +235,7 @@ const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
               onClick={() => {
                 const newParams = new URLSearchParams(searchParams);
                 newParams.set('status', 'KENDALA');
-                setSearchParams(newParams);
+                startTransition(() => setSearchParams(newParams));
               }}
             >
               <AlertCircle size={24} color="var(--accent-red)" className="metric-icon" />
@@ -248,7 +250,7 @@ const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
               onClick={() => {
                 const newParams = new URLSearchParams(searchParams);
                 newParams.set('status', 'SELESAI');
-                setSearchParams(newParams);
+                startTransition(() => setSearchParams(newParams));
               }}
             >
               <CheckCircle2 size={24} color="var(--accent-green)" className="metric-icon" />
@@ -290,7 +292,7 @@ const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
                     <th>Lihat Data</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody ref={tableRef}>
                   {paginatedTableData.length > 0 ? (
                     paginatedTableData.map(school => (
                       <tr key={school.id} onClick={() => setTimeout(() => navigate(`school/${school.npsn}`), 150)} className="clickable-row">
@@ -323,7 +325,7 @@ const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
             <PaginationControl 
               currentPage={currentDashboardPage} 
               totalPages={totalDashboardPages} 
-              onPageChange={setDashboardPage} 
+              onPageChange={(page) => startTransition(() => setDashboardPage(page))} 
             />
           </div>
 

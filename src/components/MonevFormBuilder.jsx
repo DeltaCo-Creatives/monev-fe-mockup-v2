@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { PlusCircle, Trash2, Settings, Type, Hash, List, CheckSquare, Upload, CheckCircle2, ChevronDown, ChevronUp, X, Calendar, Clock, MapPin } from 'lucide-react';
+import DebouncedInput from './DebouncedInput';
 import './MonevFormBuilder.css';
 
 const QUESTION_TYPES = [
@@ -301,21 +302,21 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
                   <div className="mfb-q-body">
                     <div className="mfb-input-group">
                       <label>Pertanyaan / Label Field</label>
-                      <input 
+                      <DebouncedInput 
                         type="text" 
                         placeholder="Masukkan pertanyaan di sini..." 
                         value={q.label}
-                        onChange={(e) => updateQuestion(q.id, { label: e.target.value })}
+                        onChange={(val) => updateQuestion(q.id, { label: val })}
                       />
                     </div>
 
                     <div className="mfb-input-group mt-1">
                       <label>Deskripsi / Petunjuk Pengisian (Opsional)</label>
-                      <input 
+                      <DebouncedInput 
                         type="text" 
                         placeholder="Contoh: Masukkan nilai dalam satuan juta Rupiah..." 
                         value={q.description || ''}
-                        onChange={(e) => updateQuestion(q.id, { description: e.target.value })}
+                        onChange={(val) => updateQuestion(q.id, { description: val })}
                       />
                     </div>
 
@@ -338,29 +339,29 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
                         <>
                           <div className="mfb-input-group-inline">
                             <label>Placeholder Text</label>
-                            <input 
+                            <DebouncedInput 
                               type="text" 
                               placeholder="Teks bayangan..." 
                               value={q.config.placeholder || ''}
-                              onChange={(e) => updateConfig(q.id, 'placeholder', e.target.value)}
+                              onChange={(val) => updateConfig(q.id, 'placeholder', val)}
                             />
                           </div>
                           <div className="mfb-input-group-inline">
                             <label>Min Karakter</label>
-                            <input 
+                            <DebouncedInput 
                               type="number" 
                               placeholder="Tidak ada" 
                               value={q.config.minLength || ''}
-                              onChange={(e) => updateConfig(q.id, 'minLength', e.target.value)}
+                              onChange={(val) => updateConfig(q.id, 'minLength', val)}
                             />
                           </div>
                           <div className="mfb-input-group-inline">
                             <label>Max Karakter</label>
-                            <input 
+                            <DebouncedInput 
                               type="number" 
                               placeholder="Tidak ada" 
                               value={q.config.maxLength || ''}
-                              onChange={(e) => updateConfig(q.id, 'maxLength', e.target.value)}
+                              onChange={(val) => updateConfig(q.id, 'maxLength', val)}
                             />
                           </div>
                         </>
@@ -384,20 +385,20 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
                           </div>
                           <div className="mfb-input-group-inline">
                             <label>Nilai Minimum</label>
-                            <input 
+                            <DebouncedInput 
                               type="number" 
                               placeholder="Tidak ada batas" 
-                              value={q.config.min}
-                              onChange={(e) => updateConfig(q.id, 'min', e.target.value)}
+                              value={q.config.min || ''}
+                              onChange={(val) => updateConfig(q.id, 'min', val)}
                             />
                           </div>
                           <div className="mfb-input-group-inline">
                             <label>Nilai Maksimum</label>
-                            <input 
+                            <DebouncedInput 
                               type="number" 
                               placeholder="Tidak ada batas" 
-                              value={q.config.max}
-                              onChange={(e) => updateConfig(q.id, 'max', e.target.value)}
+                              value={q.config.max || ''}
+                              onChange={(val) => updateConfig(q.id, 'max', val)}
                             />
                           </div>
                           <div className="mfb-input-group-inline">

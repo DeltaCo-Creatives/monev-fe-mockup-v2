@@ -159,16 +159,15 @@ const Step1SchoolSearch = ({ onNext }) => {
       <div className="table-responsive" style={{ borderTop: '1px solid var(--border-light)', backgroundColor: 'var(--bg-card)' }}>
         <div className="split-table-container" style={{ margin: 0, minWidth: '100%', padding: '0 2rem' }}>
           <div className="split-table-header" style={{ padding: '1.25rem 1.25rem 1.25rem calc(1.25rem + 4px)', borderBottom: '2px solid var(--border-light)' }}>
-            <div className="header-data-segment" style={{ display: 'grid', gridTemplateColumns: '1.5fr 3.5fr 3fr 80px', gap: '1rem', width: '100%' }}>
+            <div className="header-data-segment" style={{ display: 'grid', gridTemplateColumns: '1.5fr 3.5fr 3fr', gap: '1rem', width: '100%' }}>
               <div>NPSN</div>
               <div>Nama Sekolah</div>
               <div>Lokasi</div>
-              <div style={{ textAlign: 'center' }}>Pilih</div>
             </div>
           </div>
           
           <div style={{ padding: '1rem 0' }}>
-            <div className="split-table-scroll-area" style={{ maxHeight: '400px', overflowY: 'auto', padding: '4px', paddingRight: '0.5rem' }}>
+            <div className="split-table-scroll-area" style={{ maxHeight: '400px', overflowY: 'auto', padding: '6px', paddingRight: '1rem' }}>
               <div className="split-table-body" ref={tbodyRef}>
                 {!isDataLoaded ? (
                   <div style={{ textAlign: 'center', padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: 'var(--text-secondary)' }}>
@@ -194,7 +193,7 @@ const Step1SchoolSearch = ({ onNext }) => {
                           onClick={(e) => handleSchoolClick(e, school)}
                           style={{
                             display: 'grid',
-                            gridTemplateColumns: '1.5fr 3.5fr 3fr 80px',
+                            gridTemplateColumns: '1.5fr 3.5fr 3fr',
                             gap: '1rem',
                             width: '100%',
                             border: isSelected ? '1px solid var(--accent-blue)' : '1px solid var(--border-light)',
@@ -210,20 +209,6 @@ const Step1SchoolSearch = ({ onNext }) => {
                           </div>
                           <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', display: 'flex', alignItems: 'center' }}>
                             {school['Kab/Kota']}, {school.Provinsi}
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <div style={{ 
-                              width: '20px', 
-                              height: '20px', 
-                              borderRadius: '50%', 
-                              border: `2px solid ${isSelected ? 'var(--accent-blue)' : 'var(--border-light)'}`,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              backgroundColor: 'white'
-                            }}>
-                              {isSelected && <div style={{ width: '10px', height: '10px', backgroundColor: 'var(--accent-blue)', borderRadius: '50%' }} />}
-                            </div>
                           </div>
                         </div>
                       </div>

@@ -103,9 +103,9 @@ input:focus, select:focus {
   
   .wizard-step-card .row-data-segment, 
   .wizard-step-card .header-data-segment {
-    gap: 0.5rem !important;
+    gap: 0.25rem !important;
     padding: 0.75rem 0.5rem !important;
-    grid-template-columns: 1.5fr 3fr 3fr 40px !important;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 3.5fr) minmax(0, 3fr) !important;
   }
   
   .wizard-step-card .row-data-segment div, 
@@ -113,15 +113,5 @@ input:focus, select:focus {
     font-size: 0.75rem !important;
     word-break: break-word;
     hyphens: auto;
-  }
-  
-  /* Reduce radio button wrapper size */
-  .wizard-step-card .row-data-segment > div:last-child > div {
-    width: 16px !important;
-    height: 16px !important;
-  }
-  .wizard-step-card .row-data-segment > div:last-child > div > div {
-    width: 8px !important;
-    height: 8px !important;
   }
 }
