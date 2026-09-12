@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, User, Lock } from 'lucide-react';
+import { ArrowRight, Eye } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import './Login.css';
@@ -9,6 +9,7 @@ const Login = ({ onLogin }) => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('admin123');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,7 +29,7 @@ const Login = ({ onLogin }) => {
         clearProps: "transform,opacity"
       }
     );
-    gsap.fromTo(".login-logo > *", 
+    gsap.fromTo(".login-logo > *, .login-subtitle, .login-subtext", 
       { y: 20, opacity: 0 },
       {
         y: 0,
@@ -40,7 +41,7 @@ const Login = ({ onLogin }) => {
         clearProps: "transform,opacity"
       }
     );
-    gsap.fromTo(".login-field, .login-btn", 
+    gsap.fromTo(".login-form-group, .login-btn, .login-footer-links, .login-copyright", 
       { y: 20, opacity: 0 },
       {
         y: 0,
@@ -55,42 +56,71 @@ const Login = ({ onLogin }) => {
   }, { scope: containerRef });
 
   return (
-    <div className="login-page" ref={containerRef}>
-      <form className="login-card glass" onSubmit={handleSubmit}>
+    <div className="login-page-bg" ref={containerRef}>
+      <div className="bg-circle circle-1"></div>
+      <div className="bg-circle circle-2"></div>
+      
+      <div className="login-card">
         <div className="login-logo">
-          <div className="logo-icon">
-            <GraduationCap size={28} color="#ffffff" />
-          </div>
+          <img src="/favicon.svg" alt="Kemdikbud Logo" className="kemdikbud-logo" />
           <h2>Kemen<span>dikdasmen</span></h2>
-          <p>Monitoring &amp; Evaluasi Revitalisasi SMP</p>
+          <div className="login-subtitle">MONITORING &amp; EVALUASI</div>
+          <div className="login-subtext">
+            Monitoring &amp; Evaluasi Revitalisasi<br />
+            Satuan Pendidikan 2026
+          </div>
         </div>
 
-        <label className="login-field">
-          <span>Username</span>
-          <div className="input-with-icon">
-            <User size={16} />
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="login-form-group">
+            <label>Username</label>
             <input
               type="text"
+              placeholder="Masukkan username / email"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
-        </label>
 
-        <label className="login-field">
-          <span>Password</span>
-          <div className="input-with-icon">
-            <Lock size={16} />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+          <div className="login-form-group">
+            <label>Password</label>
+            <div className="password-input-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button 
+                type="button" 
+                className="btn-icon-only eye-btn"
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex="-1"
+              >
+                <Eye size={18} />
+              </button>
+            </div>
+            <div className="forgot-password-link">
+              <a href="#lupa">Lupa Password?</a>
+            </div>
           </div>
-        </label>
 
-        <button type="submit" className="login-btn">Masuk</button>
-      </form>
+          <button type="submit" className="login-btn btn-primary">
+            Masuk <ArrowRight size={18} />
+          </button>
+        </form>
+
+        <div className="login-footer-links">
+          <p>Belum punya akun untuk aplikasi Monev Sarpras?</p>
+          <button type="button" className="login-btn btn-secondary">
+            Daftar Sekarang
+          </button>
+        </div>
+
+        <div className="login-copyright">
+          © 2026 Revitalisasi Satuan Pendidikan — Kemendikdasmen
+        </div>
+      </div>
     </div>
   );
 };
