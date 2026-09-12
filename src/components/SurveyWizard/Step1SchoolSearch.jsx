@@ -112,15 +112,13 @@ const Step1SchoolSearch = ({ onNext }) => {
     <div className="wizard-step-card gsap-slide-up glass" style={{ padding: '0', overflow: 'hidden' }}>
       
       {/* Verval-style compact header */}
-      <div className="grid-header" style={{ padding: '1.5rem 2rem', borderBottom: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-        <div className="header-title">
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>Pilih Sekolah Sasaran</h2>
-        </div>
+      <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%', boxSizing: 'border-box' }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>Pilih Sekolah Sasaran</h2>
 
-        <div className="grid-search" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', width: '100%' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
           
           <div style={{ position: 'relative' }}>
-            <MapPin size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+            <MapPin size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', pointerEvents: 'none', zIndex: 1 }} />
             <select 
               value={regionFilter}
               onChange={handleRegionChange}
@@ -132,7 +130,7 @@ const Step1SchoolSearch = ({ onNext }) => {
           </div>
 
           <div style={{ position: 'relative' }}>
-            <MapPin size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+            <MapPin size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', pointerEvents: 'none', zIndex: 1 }} />
             <select 
               value={cityFilter}
               onChange={(e) => setCityFilter(e.target.value)}
@@ -144,13 +142,13 @@ const Step1SchoolSearch = ({ onNext }) => {
             </select>
           </div>
 
-          <div style={{ position: 'relative', gridColumn: 'auto' }}>
+          <div style={{ position: 'relative' }}>
             <DebouncedSearchInput 
               placeholder="Cari NPSN atau Nama..." 
               value={searchTerm}
               onChange={setSearchTerm}
               delay={300}
-              style={{ width: '100%', padding: '0.6rem 1rem 0.6rem 2.5rem', borderRadius: '50px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', fontSize: '0.9rem', color: 'var(--text-primary)' }}
+              style={{ width: '100%', padding: '0.6rem 1rem 0.6rem 2.5rem', borderRadius: '50px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', fontSize: '0.9rem', color: 'var(--text-primary)', boxSizing: 'border-box' }}
             />
           </div>
         </div>

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { PlusCircle, Trash2, Settings, Type, Hash, List, CheckSquare, Upload, CheckCircle2, ChevronDown, ChevronUp, X, Calendar, Clock, MapPin } from 'lucide-react';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { PlusCircle, Trash2, Settings, Type, Hash, List, CheckSquare, Upload, CheckCircle2, ChevronDown, ChevronUp, X, Calendar, Clock, MapPin, RotateCcw } from 'lucide-react';
 import DebouncedInput from './DebouncedInput';
 import './MonevFormBuilder.css';
 
@@ -41,6 +42,7 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
   const [questions, setQuestions] = useState([]);
   const [expandedQId, setExpandedQId] = useState(null);
   const containerRef = useRef(null);
+  const [listRef] = useAutoAnimate();
 
   const addQuestion = (typeId) => {
     const newQ = {
@@ -237,35 +239,71 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
               Daftar menu ini akan muncul sebagai pilihan dropdown saat Petugas menambahkan dokumentasi foto Ruang/Bangunan.
             </p>
-            {menuOptions.map((opt, idx) => (
-              <div key={idx} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                <input 
-                  type="text" 
-                  className="mfb-input-lg" 
-                  style={{ flex: 1, padding: '0.5rem', fontSize: '0.9rem' }}
-                  value={opt}
-                  placeholder="Nama opsi menu..."
-                  onChange={(e) => {
-                    const newOpts = [...menuOptions];
-                    newOpts[idx] = e.target.value;
-                    setMenuOptions(newOpts);
-                  }}
-                />
-                <button 
-                  className="icon-btn danger" 
-                  onClick={() => setMenuOptions(menuOptions.filter((_, i) => i !== idx))}
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
-            ))}
-            <button 
-              className="btn-secondary" 
-              style={{ marginTop: '0.5rem', alignSelf: 'flex-start' }}
-              onClick={() => setMenuOptions([...menuOptions, ""])}
-            >
-              <PlusCircle size={16} /> Tambah Opsi Menu
-            </button>
+            <div ref={listRef}>
+              {menuOptions.map((opt, idx) => (
+                <div key={idx} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <DebouncedInput 
+                    type="text" 
+                    className="mfb-input-lg" 
+                    style={{ flex: 1, padding: '0.5rem', fontSize: '0.9rem' }}
+                    value={opt}
+                    placeholder="Nama opsi menu..."
+                    onChange={(val) => {
+                      const newOpts = [...menuOptions];
+                      newOpts[idx] = val;
+                      setMenuOptions(newOpts);
+                    }}
+                  />
+                  <button 
+                    className="icon-btn danger" 
+                    onClick={() => setMenuOptions(menuOptions.filter((_, i) => i !== idx))}
+                    title="Hapus Opsi"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+              <button 
+                className="btn-secondary btn-bouncy" 
+                onClick={() => setMenuOptions([...menuOptions, ""])}
+              >
+                <PlusCircle size={18} /> Tambah Opsi
+              </button>
+              <button 
+                className="btn-secondary btn-bouncy" 
+                style={{ color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+                onClick={() => {
+                  if(window.confirm('Yakin ingin menghapus SEMUA opsi menu?')) {
+                    setMenuOptions([]);
+                  }
+                }}
+              >
+                <Trash2 size={18} /> Hapus Semua
+              </button>
+              <button 
+                className="btn-secondary btn-bouncy" 
+                onClick={() => {
+                  if(window.confirm('Kembalikan ke daftar menu default? Ini akan menimpa perubahan Anda.')) {
+                    setMenuOptions(DEFAULT_MENU_OPTIONS);
+                  }
+                }}
+              >
+                <RotateCcw size={18} /> Reset Default
+              </button>
+              
+              <div style={{ flex: 1 }}></div>
+              
+              <button 
+                className="btn-primary btn-bouncy" 
+                onClick={() => {
+                  alert("Mockup: Konfigurasi diterapkan dan siap dikirim ke API!");
+                }}
+              >
+                <CheckCircle2 size={18} /> Terapkan Konfigurasi
+              </button>
+            </div>
           </div>
         </div>
 

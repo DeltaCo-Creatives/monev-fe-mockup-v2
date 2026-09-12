@@ -1,8 +1,10 @@
 import React from 'react';
 import './RegionTable.css';
 import { ChevronRight, Search, Info } from 'lucide-react';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const RegionTable = ({ data }) => {
+  const [tableRef] = useAutoAnimate();
   return (
     <div className="region-container glass">
       <div className="region-header">
@@ -37,7 +39,7 @@ const RegionTable = ({ data }) => {
                 <th className="text-left">PROGRESS</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody ref={tableRef}>
               {data.map((row, index) => (
                 <tr key={index}>
                   <td className="col-wilayah">

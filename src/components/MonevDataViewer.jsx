@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Download, Target, Search } from 'lucide-react';
 import '../pages/PejabatFramework.css';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const MonevDataViewer = ({ categoriesData, schoolsData }) => {
+  const [tableRef] = useAutoAnimate();
   const [selectedCatId, setSelectedCatId] = useState(categoriesData[0]?.id);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -141,7 +143,7 @@ const MonevDataViewer = ({ categoriesData, schoolsData }) => {
                 ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody ref={tableRef}>
             {filteredSchools.length > 0 ? (
               filteredSchools.map((school) => {
                 const answers = school.answers || {};

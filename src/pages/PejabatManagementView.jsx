@@ -3,9 +3,11 @@ import { Search } from 'lucide-react';
 import PaginationControl from '../components/PaginationControl';
 import DebouncedSearchInput from '../components/DebouncedSearchInput';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const PejabatManagementView = ({ categoriesData, schoolsData, handleStatusChange }) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [tableRef] = useAutoAnimate();
   const navigate = useNavigate();
   const [managementSearchTerm, setManagementSearchTerm] = useState('');
   const managementCatFilter = searchParams.get('category') || 'ALL';
@@ -86,13 +88,13 @@ const PejabatManagementView = ({ categoriesData, schoolsData, handleStatusChange
                 <div style={{ flex: '1 1 20%' }}>Status Saat Ini</div>
               </div>
               <div className="header-action-segment">
-                <div>Override Status</div>
+                <div>Ubah Status</div>
               </div>
             </div>
             
             <div style={{ padding: '1rem 1.25rem' }}>
               <div className="split-table-scroll-area" style={{ maxHeight: 'calc(100vh - 250px)', overflowY: 'auto', paddingRight: '0.5rem' }}>
-                <div className="split-table-body">
+                <div className="split-table-body" ref={tableRef}>
                   {paginatedManagementData.length > 0 ? (
                     paginatedManagementData.map(school => (
                       <div key={school.id} className="split-table-row">

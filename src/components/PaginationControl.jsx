@@ -37,7 +37,7 @@ const PaginationControl = ({ currentPage, totalPages, onPageChange }) => {
     return pages;
   };
 
-  if (totalPages <= 1) return null;
+  if (totalPages <= 0) return null;
 
   return (
     <div 

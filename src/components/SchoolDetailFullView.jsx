@@ -3,8 +3,10 @@ import { ArrowLeft, MapPin, Calendar, User, CheckCircle2, AlertCircle, Clock, Fi
 import AdvancedImageViewer from './AdvancedImageViewer';
 import categoriesDataRaw from '../data/categories.json';
 import './SchoolDetailFullView.css';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const SchoolDetailFullView = ({ school, onBack }) => {
+  const [tableRef] = useAutoAnimate();
   const [activeTab, setActiveTab] = useState('instrumen'); // 'instrumen', 'dokumen', 'foto'
   const containerRef = useRef(null);
 
@@ -109,7 +111,7 @@ const SchoolDetailFullView = ({ school, onBack }) => {
                         <th>Jawaban Lapangan</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody ref={tableRef}>
                       {category?.questions.map((q, idx) => (
                         <tr key={q.id}>
                           <td>{idx + 1}</td>
