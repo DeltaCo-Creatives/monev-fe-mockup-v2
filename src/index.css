@@ -9,11 +9,10 @@
   --bg-input: #ffffff;
   
   /* Accents */
-  --accent-blue: #1d4ed8;
-  --accent-blue-light: #eff6ff;
-  --accent-green: #1a73e8;
-  --accent-orange: #64748b;
-  --accent-red: #64748b;
+  --accent-orange: #e68a00;
+  --accent-orange-light: #fff7ed;
+  --accent-green: #f59e0b;
+  --accent-red: #ef4444;
   --accent-purple: #8b5cf6;
   
   /* Text */
@@ -42,8 +41,8 @@
   --bg-input: #0f172a;
   
   /* Accents */
-  --accent-blue: #3b82f6;
-  --accent-blue-light: rgba(59, 130, 246, 0.1);
+  --accent-orange: #f59e0b;
+  --accent-orange-light: rgba(230, 138, 0, 0.1);
   
   /* Text */
   --text-primary: #f8fafc;
@@ -187,4 +186,93 @@ body {
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+/* --- Premium Ambient Background & Pizzazz (Hardware Accelerated) --- */
+
+body {
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(230, 138, 0, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+  animation: ambientFloat 30s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+  transform: translateZ(0); /* force GPU */
+}
+
+@keyframes ambientFloat {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.6; }
+  50% { transform: translate(3%, 4%) scale(1.05) rotate(2deg); opacity: 0.8; }
+  100% { transform: translate(-2%, 2%) scale(0.95) rotate(-1deg); opacity: 0.5; }
+}
+
+/* --- Button Shine Effect --- */
+button, .btn, .btn-primary, .btn-secondary {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+button::after, .btn::after, .btn-primary::after, .btn-secondary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-25deg) translateZ(0);
+  transition: all 0.7s ease;
+  pointer-events: none;
+}
+
+button:hover::after, .btn:hover::after, .btn-primary:hover::after, .btn-secondary:hover::after {
+  left: 200%;
+  transition: all 0.7s ease;
+}
+
+/* --- Card Interactive Shimmer --- */
+.stat-card, .dashboard-card, .widget-card, .category-card, .category-select-card, .analytics-card, .cat-stat-card, .answer-card, .doc-card, .wizard-step-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  transform-origin: center;
+  will-change: transform, box-shadow;
+}
+
+.stat-card:hover, .dashboard-card:hover, .widget-card:hover, .category-card:hover, .category-select-card:hover, .analytics-card:hover, .cat-stat-card:hover, .answer-card:hover, .doc-card:hover, .wizard-step-card:hover {
+  transform: translateY(-4px) scale(1.01) !important;
+  box-shadow: 0 12px 30px rgba(230, 138, 0, 0.12) !important;
+  border-color: rgba(230, 138, 0, 0.3) !important;
+}
+
+/* Shimmer pseudo element for cards */
+.stat-card::after, .dashboard-card::after, .widget-card::after, .category-card::after, .category-select-card::after, .analytics-card::after, .cat-stat-card::after, .answer-card::after, .doc-card::after, .wizard-step-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.stat-card:hover::after, .dashboard-card:hover::after, .widget-card:hover::after, .category-card:hover::after, .category-select-card:hover::after, .analytics-card:hover::after, .cat-stat-card:hover::after, .answer-card:hover::after, .doc-card:hover::after, .wizard-step-card:hover::after {
+  opacity: 1;
+}
+
+/* Hardware Accelerated Utility */
+.hardware-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }

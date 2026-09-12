@@ -117,12 +117,12 @@ const PejabatManagementView = ({ categoriesData, schoolsData, handleStatusChange
                               width: '100%',
                               padding: '8px 12px', 
                               borderRadius: '6px', 
-                              border: '1px solid var(--accent-blue-light)', 
+                              border: '1px solid var(--accent-orange-light)', 
                               backgroundColor: 'var(--bg-input)',
                               fontSize: '0.85rem',
                               cursor: 'pointer',
                               fontWeight: '600',
-                              color: 'var(--accent-blue)',
+                              color: 'var(--accent-orange)',
                               outline: 'none',
                               boxShadow: 'var(--shadow-sm)'
                             }}

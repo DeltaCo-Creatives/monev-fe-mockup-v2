@@ -52,8 +52,8 @@
   height: 40px;
   flex-shrink: 0;
   border-radius: var(--radius-md);
-  background-color: var(--accent-blue-light);
-  color: var(--accent-blue);
+  background-color: var(--accent-orange-light);
+  color: var(--accent-orange);
   display: flex;
   align-items: center;
   justify-content: center;

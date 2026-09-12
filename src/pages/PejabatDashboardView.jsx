@@ -45,11 +45,11 @@ const MemoizedAnalyticsGrid = React.memo(({ chartData, completionRate, stats, re
         </div>
         <div className="cat-progress-legend">
           <div className="legend-item">
-            <div className="legend-color" style={{ backgroundColor: 'var(--accent-green)'}}></div>
+            <div className="legend-color" style={{ backgroundColor: '#10b981'}}></div>
             <span>Sudah Survei: <strong>{stats.completedSurveys.toLocaleString('id-ID')}</strong></span>
           </div>
           <div className="legend-item">
-            <div className="legend-color" style={{ backgroundColor: 'var(--accent-orange)'}}></div>
+            <div className="legend-color" style={{ backgroundColor: 'var(--accent-red)'}}></div>
             <span>Belum Survei: <strong>{stats.pendingSurveys.toLocaleString('id-ID')}</strong></span>
           </div>
         </div>
@@ -72,8 +72,8 @@ const MemoizedAnalyticsGrid = React.memo(({ chartData, completionRate, stats, re
                 contentStyle={{ borderRadius: '8px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-card)' }}
               />
               <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }}/>
-              <Bar dataKey="selesai" name="Selesai" stackId="a" fill="var(--accent-green)" radius={[0, 0, 4, 4]} />
-              <Bar dataKey="belum" name="Belum" stackId="a" fill="var(--accent-orange)" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="selesai" name="Selesai" stackId="a" fill="#10b981" radius={[0, 0, 4, 4]} />
+              <Bar dataKey="belum" name="Belum" stackId="a" fill="var(--accent-red)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -100,8 +100,8 @@ const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
 
   // Pie Chart Data
   const chartData = useMemo(() => stats ? [
-    { name: 'Selesai Survei', value: stats.completedSurveys, color: 'var(--accent-green)' },
-    { name: 'Belum Survei', value: stats.pendingSurveys, color: 'var(--accent-orange)' }
+    { name: 'Selesai Survei', value: stats.completedSurveys, color: '#10b981' },
+    { name: 'Belum Survei', value: stats.pendingSurveys, color: 'var(--accent-red)' }
   ] : [], [stats]);
 
   const completionRate = stats && stats.totalSchools > 0 ? Math.round((stats.completedSurveys / stats.totalSchools) * 100) : 0;
@@ -223,14 +223,14 @@ const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
                 startTransition(() => setSearchParams(newParams));
               }}
             >
-              <Target size={24} color="var(--accent-blue)" className="metric-icon" />
+              <Target size={24} color="var(--accent-orange)" className="metric-icon" />
               <div className="cat-stat-data">
                 <span>Target Satuan Pendidikan</span>
                 <h3>{stats.totalSchools.toLocaleString('id-ID')}</h3>
               </div>
             </div>
             <div 
-              className={`cat-stat-card glass gsap-slide-up clickable-metric ${statusFilter === 'KENDALA' ? 'active-metric-filter' : ''}`} 
+              className={`cat-stat-card glass gsap-slide-up clickable-metric ${statusFilter === 'KENDALA' ? 'active-metric-filter filter-kendala' : ''}`} 
               style={{ animationDelay: '0.1s' }}
               onClick={() => {
                 const newParams = new URLSearchParams(searchParams);
@@ -245,7 +245,7 @@ const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
               </div>
             </div>
             <div 
-              className={`cat-stat-card glass gsap-slide-up clickable-metric ${statusFilter === 'SELESAI' ? 'active-metric-filter' : ''}`} 
+              className={`cat-stat-card glass gsap-slide-up clickable-metric ${statusFilter === 'SELESAI' ? 'active-metric-filter filter-selesai' : ''}`} 
               style={{ animationDelay: '0.2s' }}
               onClick={() => {
                 const newParams = new URLSearchParams(searchParams);
@@ -253,7 +253,7 @@ const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
                 startTransition(() => setSearchParams(newParams));
               }}
             >
-              <CheckCircle2 size={24} color="var(--accent-green)" className="metric-icon" />
+              <CheckCircle2 size={24} color="#10b981" className="metric-icon" />
               <div className="cat-stat-data">
                 <span>Instrumen Tervalidasi</span>
                 <h3>{(stats.completedSurveys - Math.floor(stats.completedSurveys * 0.1)).toLocaleString('id-ID')}</h3>

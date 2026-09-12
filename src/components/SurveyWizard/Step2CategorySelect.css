@@ -18,19 +18,19 @@
 }
 
 .cat-select-card:hover {
-  border-color: var(--accent-blue-light);
+  border-color: var(--accent-orange-light);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
 
 .cat-select-card.selected {
-  border-color: var(--accent-blue);
-  background-color: rgba(59, 130, 246, 0.05);
+  border-color: var(--accent-orange);
+  background-color: rgba(230, 138, 0, 0.05);
 }
 
 .cat-card-icon {
   background-color: var(--bg-input);
-  color: var(--accent-blue);
+  color: var(--accent-orange);
   width: 48px;
   height: 48px;
   border-radius: var(--radius-md);
@@ -40,7 +40,7 @@
 }
 
 .cat-select-card.selected .cat-card-icon {
-  background-color: var(--accent-blue);
+  background-color: var(--accent-orange);
   color: white;
 }
 

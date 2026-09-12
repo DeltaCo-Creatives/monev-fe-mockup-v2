@@ -64,9 +64,7 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, onLogout = () => {}
       <aside className={`sidebar ${isOpen ? 'open' : ''}`} ref={sidebarRef}>
       <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div className="logo-container">
-          <div className="logo-icon">
-             <GraduationCap size={28} color="#ffffff" />
-          </div>
+          <img src="/logo-kemdikbud.svg" alt="Kemdikbud" className="sidebar-kemdikbud-logo" />
           <div className="logo-text">
             <h2>Kemen<span>dikdasmen</span></h2>
             <p>{isPejabat ? 'DIREKTORAT SMP' : 'MONEV LAPANGAN'}</p>

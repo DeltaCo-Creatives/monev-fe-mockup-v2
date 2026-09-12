@@ -25,8 +25,8 @@
 }
 
 .aiv-badge {
-  background: var(--accent-blue-light);
-  color: var(--accent-blue);
+  background: var(--accent-orange-light);
+  color: var(--accent-orange);
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 0.8rem;

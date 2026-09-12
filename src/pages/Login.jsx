@@ -105,21 +105,26 @@ const Login = ({ onLogin }) => {
             </div>
           </div>
 
-          <button type="submit" className="login-btn btn-primary">
+          <button type="submit" className="login-btn login-btn-primary">
             Masuk <ArrowRight size={18} />
           </button>
         </form>
 
         <div className="login-footer-links">
           <p>Belum punya akun untuk aplikasi Monev Sarpras?</p>
-          <button type="button" className="login-btn btn-secondary">
+          <button type="button" className="login-btn btn-secondary" onClick={() => navigate('/register')}>
             Daftar Sekarang
           </button>
         </div>
 
-        <div className="login-copyright">
-          © 2026 Revitalisasi Satuan Pendidikan — Kemendikdasmen
+        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', alignItems: 'center', marginTop: '24px' }}>
+          <img src="/ramah-logo.svg" alt="RAMAH" style={{ height: '36px', objectFit: 'contain' }} />
+          <img src="/pendidikan-logo.svg" alt="Pendidikan Untuk Semua" style={{ height: '36px', objectFit: 'contain' }} />
         </div>
+
+        <p className="login-copyright">
+          © 2026 Revitalisasi Satuan Pendidikan — Kemendikdasmen
+        </p>
       </div>
     </div>
   );

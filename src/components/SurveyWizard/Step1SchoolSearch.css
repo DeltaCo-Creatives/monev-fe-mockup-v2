@@ -5,7 +5,7 @@
 }
 
 .school-row.selected-row {
-  background-color: rgba(59, 130, 246, 0.05) !important;
+  background-color: rgba(230, 138, 0, 0.05) !important;
 }
 
 /* Make sure the select dropdown arrows look nice */
@@ -21,8 +21,8 @@ select {
 /* Ensure inputs glow on focus */
 input:focus, select:focus {
   outline: none;
-  border-color: var(--accent-blue) !important;
-  box-shadow: 0 0 0 3px var(--accent-blue-light) !important;
+  border-color: var(--accent-orange) !important;
+  box-shadow: 0 0 0 3px var(--accent-orange-light) !important;
 }
 
 .split-table-container {
@@ -80,8 +80,8 @@ input:focus, select:focus {
 .row-data-segment:hover {
   background-color: var(--bg-input);
   transform: scale(1.01) translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
-  border-color: var(--accent-blue-light);
+  box-shadow: 0 4px 12px rgba(230, 138, 0, 0.08);
+  border-color: var(--accent-orange-light);
   z-index: 10;
 }
 

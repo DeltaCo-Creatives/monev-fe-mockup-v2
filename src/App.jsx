@@ -22,7 +22,7 @@ function App() {
   // A smooth full-screen loading fallback while Vite downloads the JS chunks
   const PageLoader = () => (
     <div style={{ height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-main)' }}>
-      <Loader2 size={40} color="var(--accent-blue)" style={{ animation: 'spin 1s linear infinite' }} />
+      <Loader2 size={40} color="var(--accent-orange)" style={{ animation: 'spin 1s linear infinite' }} />
     </div>
   );
 

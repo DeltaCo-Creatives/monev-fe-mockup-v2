@@ -38,10 +38,10 @@
 
 .pagination-btn:hover:not(:disabled) {
   background-color: var(--bg-main);
-  border-color: var(--accent-blue);
-  color: var(--accent-blue);
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 4px 12px rgba(230, 138, 0, 0.15);
 }
 
 .pagination-btn:active:not(:disabled) {
@@ -50,15 +50,15 @@
 }
 
 .pagination-btn.active {
-  background-color: var(--accent-blue);
-  border-color: var(--accent-blue);
+  background-color: var(--accent-orange);
+  border-color: var(--accent-orange);
   color: white;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 4px 12px rgba(230, 138, 0, 0.25);
 }
 
 .pagination-btn.active:hover {
-  background-color: #2563eb; /* darker blue */
+  background-color: #e68a00; /* darker blue */
   color: white;
 }
 

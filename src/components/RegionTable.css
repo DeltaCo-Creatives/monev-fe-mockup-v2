@@ -34,7 +34,7 @@
 }
 
 .tab.active {
-  color: var(--accent-blue);
+  color: var(--accent-orange);
 }
 
 .tab.active::after {
@@ -44,7 +44,7 @@
   left: 0;
   width: 100%;
   height: 3px;
-  background-color: var(--accent-blue);
+  background-color: var(--accent-orange);
   border-radius: 3px 3px 0 0;
 }
 
@@ -87,7 +87,7 @@
 }
 
 .search-box:focus-within {
-  border-color: var(--accent-blue);
+  border-color: var(--accent-orange);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
@@ -142,7 +142,7 @@
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  color: var(--accent-blue);
+  color: var(--accent-orange);
 }
 
 .expand-btn {
@@ -200,5 +200,5 @@
 .progress-text {
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--accent-blue);
+  color: var(--accent-orange);
 }

@@ -129,7 +129,7 @@ const MonevFormBuilder = ({ onSave, onCancel }) => {
       );
     }
     return (
-      <div style={{ marginLeft: '1rem', marginTop: '0.5rem', padding: '1rem', borderLeft: '3px solid var(--accent-blue)', backgroundColor: 'rgba(0,0,0,0.02)', borderRadius: 'var(--radius-md)' }}>
+      <div style={{ marginLeft: '1rem', marginTop: '0.5rem', padding: '1rem', borderLeft: '3px solid var(--accent-orange)', backgroundColor: 'rgba(0,0,0,0.02)', borderRadius: 'var(--radius-md)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
           <h5 style={{ margin: 0, color: 'var(--text-secondary)' }}>Pertanyaan Lanjutan (Jika Jawaban: "{optValue}")</h5>
           <button className="icon-btn danger" onClick={() => updateCascading(q.id, optValue, null)}><X size={16} /></button>

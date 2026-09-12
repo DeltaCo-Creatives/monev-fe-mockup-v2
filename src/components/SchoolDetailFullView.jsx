@@ -158,7 +158,7 @@ const SchoolDetailFullView = ({ school, onBack }) => {
                     <button className="btn-secondary">Unduh</button>
                   </div>
                   <div className="sdfs-doc-item">
-                    <div className="doc-icon"><Building size={24} color="#3b82f6" /></div>
+                    <div className="doc-icon"><Building size={24} color="#f59e0b" /></div>
                     <div className="doc-info">
                       <h4>Site_Plan_Sekolah.pdf</h4>
                       <p>4.5 MB • Diupload {school.tanggalSurvei || '12 Mei 2024'}</p>

@@ -29,7 +29,7 @@ const Step2CategorySelect = ({ onNext, onBack, categoriesData }) => {
             </div>
             {selectedCategory?.id === cat.id && (
               <div className="cat-card-check">
-                <CheckCircle2 size={24} color="var(--accent-blue)" />
+                <CheckCircle2 size={24} color="var(--accent-orange)" />
               </div>
             )}
           </div>

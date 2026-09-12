@@ -8,15 +8,15 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background-color: rgba(59, 130, 246, 0.05);
-  border: 1px solid var(--accent-blue-light);
+  background-color: rgba(230, 138, 0, 0.05);
+  border: 1px solid var(--accent-orange-light);
   padding: 1rem 1.5rem;
   border-radius: var(--radius-md);
   margin-bottom: 2rem;
 }
 
 .banner-icon {
-  color: var(--accent-blue);
+  color: var(--accent-orange);
 }
 
 .banner-info {
@@ -38,14 +38,14 @@
 
 /* Warning & Lock */
 .warning-card {
-  background-color: rgba(249, 115, 22, 0.05) !important;
-  border-color: rgba(249, 115, 22, 0.3) !important;
+  background-color: rgba(230, 138, 0, 0.05) !important;
+  border-color: rgba(230, 138, 0, 0.3) !important;
   margin-bottom: 2rem;
 }
 
 .warning-header {
   color: var(--accent-orange) !important;
-  border-bottom: 1px solid rgba(249, 115, 22, 0.2) !important;
+  border-bottom: 1px solid rgba(230, 138, 0, 0.2) !important;
 }
 
 .warning-desc {
@@ -77,7 +77,7 @@
 
 .checkbox-lock-label:not(.locked-state):hover {
   border-color: var(--accent-orange);
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);
+  box-shadow: 0 4px 12px rgba(230, 138, 0, 0.1);
 }
 
 .checkbox-lock-label.locked-state {
@@ -125,8 +125,8 @@
 }
 
 .modal-icon-wrapper {
-  color: var(--accent-blue);
-  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--accent-orange);
+  background-color: rgba(230, 138, 0, 0.1);
   width: 64px;
   height: 64px;
   border-radius: 50%;
@@ -198,8 +198,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: var(--accent-blue);
-  border-bottom: 2px solid rgba(59, 130, 246, 0.1);
+  color: var(--accent-orange);
+  border-bottom: 2px solid rgba(230, 138, 0, 0.1);
   padding-bottom: 1.2rem;
   margin-bottom: 1.5rem;
 }
@@ -236,13 +236,13 @@
 }
 
 .premium-input:hover {
-  border-color: var(--accent-blue-light);
+  border-color: var(--accent-orange-light);
   background-color: var(--bg-card-hover);
 }
 
 .premium-input:focus {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), 0 2px 4px rgba(0,0,0,0.01) inset;
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 0 4px rgba(230, 138, 0, 0.15), 0 2px 4px rgba(0,0,0,0.01) inset;
   background-color: var(--bg-card);
   outline: none;
 }
@@ -290,15 +290,15 @@
 }
 
 .premium-radio:has(input:checked) {
-  border-color: var(--accent-blue);
-  background-color: rgba(59, 130, 246, 0.08);
-  color: var(--accent-blue);
+  border-color: var(--accent-orange);
+  background-color: rgba(230, 138, 0, 0.08);
+  color: var(--accent-orange);
 }
 
 .premium-radio input[type="radio"], .premium-radio input[type="checkbox"] {
   width: 20px;
   height: 20px;
-  accent-color: var(--accent-blue);
+  accent-color: var(--accent-orange);
   cursor: pointer;
 }
 
@@ -344,8 +344,8 @@
 }
 
 .q-num {
-  background-color: var(--accent-blue-light);
-  color: var(--accent-blue);
+  background-color: var(--accent-orange-light);
+  color: var(--accent-orange);
   font-weight: 700;
   border-radius: 50%;
   width: 32px;
@@ -575,8 +575,8 @@ input:disabled + .toggle-slider {
 }
 
 .upload-zone.photo-zone:not(.disabled):hover {
-  border-color: var(--accent-blue);
-  background-color: rgba(59, 130, 246, 0.05);
+  border-color: var(--accent-orange);
+  background-color: rgba(230, 138, 0, 0.05);
 }
 
 .upload-zone.photo-zone span {
@@ -604,7 +604,7 @@ input:disabled + .toggle-slider {
 
 .massive-doc-zone:not(.disabled):hover {
   border-color: var(--accent-orange);
-  background-color: rgba(249, 115, 22, 0.05);
+  background-color: rgba(230, 138, 0, 0.05);
 }
 
 .massive-doc-zone.has-file {
@@ -678,7 +678,7 @@ input:disabled + .toggle-slider {
 }
 
 .dynamic-room-card:hover {
-  border-color: var(--accent-blue) !important;
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.08);
+  border-color: var(--accent-orange) !important;
+  box-shadow: 0 8px 20px rgba(230, 138, 0, 0.08);
   transform: translateY(-2px);
 }

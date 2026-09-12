@@ -50,13 +50,13 @@
 }
 
 .step-item.active .step-circle {
-  border-color: var(--accent-blue);
-  color: var(--accent-blue);
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
 }
 
 .step-item.completed .step-circle {
-  background-color: var(--accent-blue);
-  border-color: var(--accent-blue);
+  background-color: var(--accent-orange);
+  border-color: var(--accent-orange);
   color: white;
 }
 
@@ -82,7 +82,7 @@
 }
 
 .step-connector.active {
-  background-color: var(--accent-blue);
+  background-color: var(--accent-orange);
 }
 
 .wizard-content {
@@ -128,7 +128,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--accent-blue);
+  background-color: var(--accent-orange);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -140,7 +140,7 @@
 }
 
 .btn-primary:hover {
-  background-color: #2563eb;
+  background-color: #e68a00;
 }
 
 .btn-primary:disabled {

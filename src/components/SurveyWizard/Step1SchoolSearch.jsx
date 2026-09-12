@@ -194,12 +194,12 @@ const Step1SchoolSearch = ({ onNext }) => {
                             gridTemplateColumns: '1.5fr 3.5fr 3fr',
                             gap: '1rem',
                             width: '100%',
-                            border: isSelected ? '1px solid var(--accent-blue)' : '1px solid var(--border-light)',
+                            border: isSelected ? '1px solid var(--accent-orange)' : '1px solid var(--border-light)',
                             backgroundColor: isSelected ? 'var(--bg-input)' : 'var(--bg-card)',
-                            boxShadow: isSelected ? '0 4px 12px rgba(59, 130, 246, 0.15)' : 'none',
+                            boxShadow: isSelected ? '0 0 0 3px var(--accent-orange-light)' : 'none',
                           }}
                         >
-                          <div style={{ color: 'var(--accent-blue)', fontWeight: 600, fontFamily: 'monospace', fontSize: '0.95rem', display: 'flex', alignItems: 'center' }}>
+                          <div style={{ color: 'var(--accent-orange)', fontWeight: 600, fontFamily: 'monospace', fontSize: '0.95rem', display: 'flex', alignItems: 'center' }}>
                             {school.NPSN}
                           </div>
                           <div style={{ fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center' }}>
