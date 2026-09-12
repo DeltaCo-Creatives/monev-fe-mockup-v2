@@ -89,7 +89,7 @@ const Step1SchoolSearch = ({ onNext }) => {
   const tbodyRef = React.useRef(null);
 
   useGSAP(() => {
-    const rows = tbodyRef.current?.querySelectorAll('tr.school-row');
+    const rows = tbodyRef.current?.querySelectorAll('.school-row');
     if (!rows || rows.length === 0) return;
     gsap.fromTo(Array.from(rows), 
       { y: 12, opacity: 0 },
@@ -105,10 +105,6 @@ const Step1SchoolSearch = ({ onNext }) => {
   }, { scope: tbodyRef, dependencies: [paginatedSchools] });
 
   const handleSchoolClick = React.useCallback((e, school) => {
-    gsap.fromTo(e.currentTarget, 
-      { backgroundColor: 'rgba(59, 130, 246, 0.2)' }, 
-      { backgroundColor: 'rgba(59, 130, 246, 0.05)', duration: 0.3, clearProps: "backgroundColor" }
-    );
     setSelectedSchool(school);
   }, [setSelectedSchool]);
 
@@ -116,129 +112,132 @@ const Step1SchoolSearch = ({ onNext }) => {
     <div className="wizard-step-card gsap-slide-up glass" style={{ padding: '0', overflow: 'hidden' }}>
       
       {/* Verval-style compact header */}
-      <div className="grid-header" style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-light)', display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="grid-header" style={{ padding: '1.5rem 2rem', borderBottom: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         <div className="header-title">
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Pilih Sekolah Sasaran</h2>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>Pilih Sekolah Sasaran</h2>
         </div>
 
-        <div className="grid-search" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', flex: '1 1 auto', justifyContent: 'flex-end' }}>
+        <div className="grid-search" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', width: '100%' }}>
           
-          <div style={{ position: 'relative', width: '250px' }}>
+          <div style={{ position: 'relative' }}>
             <MapPin size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
             <select 
               value={regionFilter}
               onChange={handleRegionChange}
-              style={{ width: '100%', padding: '0.6rem 2rem 0.6rem 2.5rem', borderRadius: '50px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', cursor: 'pointer', fontSize: '0.9rem', appearance: 'none' }}
+              style={{ width: '100%', padding: '0.6rem 2.5rem', borderRadius: '50px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', cursor: 'pointer', fontSize: '0.9rem', appearance: 'none', color: 'var(--text-primary)' }}
             >
               <option value="">Semua Provinsi</option>
               {regions.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
           </div>
 
-          <div style={{ position: 'relative', width: '250px' }}>
+          <div style={{ position: 'relative' }}>
             <MapPin size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
             <select 
               value={cityFilter}
               onChange={(e) => setCityFilter(e.target.value)}
               disabled={!regionFilter && cities.length > 100}
-              style={{ width: '100%', padding: '0.6rem 2rem 0.6rem 2.5rem', borderRadius: '50px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', cursor: 'pointer', fontSize: '0.9rem', appearance: 'none' }}
+              style={{ width: '100%', padding: '0.6rem 2.5rem', borderRadius: '50px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', cursor: 'pointer', fontSize: '0.9rem', appearance: 'none', color: 'var(--text-primary)' }}
             >
               <option value="">Semua Kab/Kota</option>
               {cities.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
 
-          <div style={{ position: 'relative', width: '300px' }}>
+          <div style={{ position: 'relative', gridColumn: 'auto' }}>
             <DebouncedSearchInput 
               placeholder="Cari NPSN atau Nama..." 
               value={searchTerm}
               onChange={setSearchTerm}
               delay={300}
-              style={{ width: '100%', padding: '0.6rem 1rem 0.6rem 2.5rem', borderRadius: '50px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', fontSize: '0.9rem' }}
+              style={{ width: '100%', padding: '0.6rem 1rem 0.6rem 2.5rem', borderRadius: '50px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', fontSize: '0.9rem', color: 'var(--text-primary)' }}
             />
           </div>
         </div>
       </div>
 
-      <div className="table-responsive" style={{ minHeight: '300px' }}>
-        <table className="premium-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th style={{ padding: '1rem 1.5rem', textAlign: 'left', borderBottom: '2px solid var(--border-light)', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>NPSN</th>
-              <th style={{ padding: '1rem 1.5rem', textAlign: 'left', borderBottom: '2px solid var(--border-light)', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Nama Sekolah</th>
-              <th style={{ padding: '1rem 1.5rem', textAlign: 'left', borderBottom: '2px solid var(--border-light)', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Lokasi</th>
-              <th style={{ padding: '1rem 1.5rem', textAlign: 'center', borderBottom: '2px solid var(--border-light)', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', width: '100px' }}>Pilih</th>
-            </tr>
-          </thead>
-          <tbody ref={tbodyRef}>
-            {!isDataLoaded ? (
-              <tr>
-                <td colSpan="4" style={{ textAlign: 'center', padding: '3rem' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: 'var(--text-secondary)' }}>
+      <div className="table-responsive" style={{ borderTop: '1px solid var(--border-light)', backgroundColor: 'var(--bg-card)' }}>
+        <div className="split-table-container" style={{ margin: 0, minWidth: '100%', padding: '0 2rem' }}>
+          <div className="split-table-header" style={{ padding: '1.25rem 1.25rem 1.25rem calc(1.25rem + 4px)', borderBottom: '2px solid var(--border-light)' }}>
+            <div className="header-data-segment" style={{ display: 'grid', gridTemplateColumns: '1.5fr 3.5fr 3fr 80px', gap: '1rem', width: '100%' }}>
+              <div>NPSN</div>
+              <div>Nama Sekolah</div>
+              <div>Lokasi</div>
+              <div style={{ textAlign: 'center' }}>Pilih</div>
+            </div>
+          </div>
+          
+          <div style={{ padding: '1rem 0' }}>
+            <div className="split-table-scroll-area" style={{ maxHeight: '400px', overflowY: 'auto', padding: '4px', paddingRight: '0.5rem' }}>
+              <div className="split-table-body" ref={tbodyRef}>
+                {!isDataLoaded ? (
+                  <div style={{ textAlign: 'center', padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: 'var(--text-secondary)' }}>
                     <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
                     <span>Memuat database sekolah...</span>
                   </div>
-                </td>
-              </tr>
-            ) : isSearching ? (
-              <tr>
-                <td colSpan="4" style={{ textAlign: 'center', padding: '3rem' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: 'var(--text-secondary)' }}>
+                ) : isSearching ? (
+                  <div style={{ textAlign: 'center', padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: 'var(--text-secondary)' }}>
                     <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} />
                     <span>Mencari sekolah...</span>
                   </div>
-                </td>
-              </tr>
-            ) : paginatedSchools.length > 0 ? (
-              paginatedSchools.map((school) => {
-                const isSelected = selectedSchool?.NPSN === school.NPSN;
-                return (
-                  <tr 
-                    key={school.NPSN}
-                    className={`school-row ${isSelected ? 'selected-row' : ''}`}
-                    onClick={(e) => handleSchoolClick(e, school)}
-                    style={{ 
-                      cursor: 'pointer', 
-                      transition: 'background-color 0.2s',
-                      backgroundColor: isSelected ? 'rgba(59, 130, 246, 0.05)' : 'transparent',
-                      borderBottom: '1px solid var(--border-light)'
-                    }}
-                  >
-                    <td style={{ padding: '1.25rem 1.5rem', color: 'var(--accent-blue)', fontWeight: 600, fontFamily: 'monospace', fontSize: '0.95rem' }}>
-                      {school.NPSN}
-                    </td>
-                    <td style={{ padding: '1.25rem 1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                      {school['Nama Satuan Pendidikan']}
-                    </td>
-                    <td style={{ padding: '1.25rem 1.5rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                      {school['Kab/Kota']},<br/>{school.Provinsi}
-                    </td>
-                    <td style={{ padding: '1.25rem 1.5rem', textAlign: 'center' }}>
-                      <div style={{ 
-                        width: '20px', 
-                        height: '20px', 
-                        borderRadius: '50%', 
-                        border: `2px solid ${isSelected ? 'var(--accent-blue)' : 'var(--border-light)'}`,
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        margin: '0 auto'
-                      }}>
-                        {isSelected && <div style={{ width: '10px', height: '10px', backgroundColor: 'var(--accent-blue)', borderRadius: '50%' }} />}
+                ) : paginatedSchools.length > 0 ? (
+                  paginatedSchools.map((school) => {
+                    const isSelected = selectedSchool?.NPSN === school.NPSN;
+                    return (
+                      <div 
+                        key={school.NPSN}
+                        className="split-table-row school-row"
+                        style={{ marginBottom: '0.75rem' }}
+                      >
+                        <div 
+                          className="row-data-segment clickable-segment"
+                          onClick={(e) => handleSchoolClick(e, school)}
+                          style={{
+                            display: 'grid',
+                            gridTemplateColumns: '1.5fr 3.5fr 3fr 80px',
+                            gap: '1rem',
+                            width: '100%',
+                            border: isSelected ? '1px solid var(--accent-blue)' : '1px solid var(--border-light)',
+                            backgroundColor: isSelected ? 'var(--bg-input)' : 'var(--bg-card)',
+                            boxShadow: isSelected ? '0 4px 12px rgba(59, 130, 246, 0.15)' : 'none',
+                          }}
+                        >
+                          <div style={{ color: 'var(--accent-blue)', fontWeight: 600, fontFamily: 'monospace', fontSize: '0.95rem', display: 'flex', alignItems: 'center' }}>
+                            {school.NPSN}
+                          </div>
+                          <div style={{ fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center' }}>
+                            {school['Nama Satuan Pendidikan']}
+                          </div>
+                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', display: 'flex', alignItems: 'center' }}>
+                            {school['Kab/Kota']}, {school.Provinsi}
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <div style={{ 
+                              width: '20px', 
+                              height: '20px', 
+                              borderRadius: '50%', 
+                              border: `2px solid ${isSelected ? 'var(--accent-blue)' : 'var(--border-light)'}`,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              backgroundColor: 'white'
+                            }}>
+                              {isSelected && <div style={{ width: '10px', height: '10px', backgroundColor: 'var(--accent-blue)', borderRadius: '50%' }} />}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan="4" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
-                  Tidak ada sekolah yang cocok dengan pencarian Anda.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                    );
+                  })
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
+                    Tidak ada sekolah yang cocok dengan pencarian Anda.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {filteredSchools.length > 0 && (

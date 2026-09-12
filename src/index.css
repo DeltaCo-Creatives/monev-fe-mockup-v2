@@ -171,3 +171,8 @@ body {
 .gsap-slide-up:nth-child(7)  { animation-delay: 0.24s; }
 .gsap-slide-up:nth-child(8)  { animation-delay: 0.28s; }
 .gsap-slide-up:nth-child(n+9) { animation-delay: 0.32s; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

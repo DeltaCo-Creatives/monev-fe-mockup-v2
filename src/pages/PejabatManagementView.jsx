@@ -76,51 +76,73 @@ const PejabatManagementView = ({ categoriesData, schoolsData, handleStatusChange
           </div>
         </div>
 
-        <div className="table-responsive" style={{ maxHeight: 'calc(100vh - 250px)', overflowY: 'auto' }}>
-          <table className="premium-table">
-            <thead style={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: 'var(--bg-card)' }}>
-              <tr>
-                <th>NPSN</th>
-                <th>Nama Sekolah</th>
-                <th>Program</th>
-                <th>Status Saat Ini</th>
-                <th>Override Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedManagementData
-                .map(school => (
-                  <tr key={school.id} onClick={() => navigate(`school/${school.npsn}`)} className="clickable-row">
-                    <td className="font-mono">{school.npsn}</td>
-                    <td className="fw-bold">{school.nama}</td>
-                    <td>{categoriesData.find(c => c.id === school.categoryId)?.name}</td>
-                    <td>{getStatusBadge(school.status)}</td>
-                    <td onClick={(e) => e.stopPropagation()}>
-                      <select 
-                        className="status-override-select"
-                        value={school.status}
-                        onChange={(e) => handleStatusChange(school.id, e.target.value)}
-                        style={{ 
-                          padding: '6px 12px', 
-                          borderRadius: '6px', 
-                          border: '1px solid var(--border-light)', 
-                          backgroundColor: 'var(--bg-input)',
-                          fontSize: '0.85rem',
-                          cursor: 'pointer',
-                          fontWeight: '500',
-                          outline: 'none'
-                        }}
-                      >
-                        <option value="Belum">Belum Mulai</option>
-                        <option value="Proses">Sedang Proses</option>
-                        <option value="Kendala">Ada Kendala</option>
-                        <option value="Selesai">Selesai</option>
-                      </select>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+        <div className="table-responsive" style={{ border: '1px solid var(--border-light)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--bg-card)' }}>
+          <div className="split-table-container" style={{ margin: 0 }}>
+            <div className="split-table-header" style={{ padding: '1.25rem', borderBottom: '2px solid var(--border-light)' }}>
+              <div className="header-data-segment">
+                <div style={{ flex: '1 1 15%' }}>NPSN</div>
+                <div style={{ flex: '1 1 30%' }}>Nama Sekolah</div>
+                <div style={{ flex: '1 1 35%' }}>Program</div>
+                <div style={{ flex: '1 1 20%' }}>Status Saat Ini</div>
+              </div>
+              <div className="header-action-segment">
+                <div>Override Status</div>
+              </div>
+            </div>
+            
+            <div style={{ padding: '1rem 1.25rem' }}>
+              <div className="split-table-scroll-area" style={{ maxHeight: 'calc(100vh - 250px)', overflowY: 'auto', paddingRight: '0.5rem' }}>
+                <div className="split-table-body">
+                  {paginatedManagementData.length > 0 ? (
+                    paginatedManagementData.map(school => (
+                      <div key={school.id} className="split-table-row">
+                        <div 
+                          className="row-data-segment clickable-segment"
+                          onClick={() => setTimeout(() => navigate(`school/${school.npsn}`), 150)}
+                        >
+                          <div style={{ flex: '1 1 15%' }} className="font-mono">{school.npsn}</div>
+                          <div style={{ flex: '1 1 30%' }} className="fw-bold">{school.nama}</div>
+                          <div style={{ flex: '1 1 35%' }}>{categoriesData.find(c => c.id === school.categoryId)?.name}</div>
+                          <div style={{ flex: '1 1 20%' }}>{getStatusBadge(school.status)}</div>
+                        </div>
+                        
+                        <div className="row-action-segment">
+                          <select 
+                            className="status-override-select"
+                            value={school.status}
+                            onChange={(e) => handleStatusChange(school.id, e.target.value)}
+                            style={{ 
+                              width: '100%',
+                              padding: '8px 12px', 
+                              borderRadius: '6px', 
+                              border: '1px solid var(--accent-blue-light)', 
+                              backgroundColor: 'var(--bg-input)',
+                              fontSize: '0.85rem',
+                              cursor: 'pointer',
+                              fontWeight: '600',
+                              color: 'var(--accent-blue)',
+                              outline: 'none',
+                              boxShadow: 'var(--shadow-sm)'
+                            }}
+                          >
+                            <option value="Belum">Belum Mulai</option>
+                            <option value="Proses">Sedang Proses</option>
+                            <option value="Kendala">Ada Kendala</option>
+                            <option value="Selesai">Selesai</option>
+                          </select>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="empty-state" style={{ padding: '3rem' }}>
+                      <Search size={32} />
+                      <p>Tidak ada data sekolah yang cocok dengan pencarian.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <PaginationControl 
           currentPage={currentManagementPage} 

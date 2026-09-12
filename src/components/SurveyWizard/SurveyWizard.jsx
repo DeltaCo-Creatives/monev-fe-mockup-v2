@@ -17,11 +17,11 @@ const SurveyWizard = ({ debugMode, categoriesData, setCategoriesData, schoolsDat
   else if (location.pathname.includes('/category/')) step = 2;
 
   const handleNextStep1 = (school) => {
-    navigate(`category/${school.NPSN}`);
+    navigate(`/petugas/survei/category/${school.NPSN}`);
   };
 
   const handleNextStep2 = (npsn, categoryId) => {
-    navigate(`form/${npsn}/${categoryId}`);
+    navigate(`/petugas/survei/form/${npsn}/${categoryId}`);
   };
 
   const handleNextStep3 = (school, category, data) => {
@@ -85,7 +85,7 @@ const SurveyWizard = ({ debugMode, categoriesData, setCategoriesData, schoolsDat
       }, ...prev]);
     }
 
-    navigate(`../success/${schoolIdStr}/${catId}`, { replace: true });
+    navigate(`/petugas/survei/success/${schoolIdStr}/${catId}`, { replace: true });
   };
 
   const handleBack = () => {
@@ -158,7 +158,7 @@ const SurveyWizard = ({ debugMode, categoriesData, setCategoriesData, schoolsDat
               onReset={handleReset} 
             />
           } />
-          <Route path="*" element={<Navigate to="search" replace />} />
+          <Route path="*" element={<Navigate to="/petugas/survei/search" replace />} />
         </Routes>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import './PaginationControl.css';
 
 const PaginationControl = ({ currentPage, totalPages, onPageChange }) => {
   const containerRef = useRef(null);
@@ -10,7 +11,7 @@ const PaginationControl = ({ currentPage, totalPages, onPageChange }) => {
 
     const handleWheel = (e) => {
       if (e.deltaY !== 0) {
-        e.preventDefault(); // Now safe because passive is false
+        e.preventDefault(); 
         container.scrollLeft += e.deltaY;
       }
     };
@@ -42,49 +43,24 @@ const PaginationControl = ({ currentPage, totalPages, onPageChange }) => {
     <div 
       className="pagination-container" 
       ref={containerRef}
-      style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'flex-start', // Changed to flex-start so it scrolls correctly
-        gap: '0.25rem', 
-        padding: '1rem', 
-        borderTop: '1px solid var(--border-light)', 
-        backgroundColor: 'var(--bg-card)', 
-        borderBottomLeftRadius: 'var(--radius-xl)', 
-        borderBottomRightRadius: 'var(--radius-xl)',
-        overflowX: 'auto', // Enable horizontal scrolling
-        whiteSpace: 'nowrap',
-        WebkitOverflowScrolling: 'touch',
-        scrollbarWidth: 'none', // Hide scrollbar for cleaner look
-        msOverflowStyle: 'none'
-      }}
     >
       <button 
         className="pagination-btn" 
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage <= 1}
         title="Halaman Sebelumnya"
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '8px', border: '1px solid var(--border-light)', backgroundColor: currentPage <= 1 ? 'var(--bg-main)' : 'var(--bg-input)', cursor: currentPage <= 1 ? 'not-allowed' : 'pointer', color: 'var(--text-secondary)' }}
       >
         <ChevronLeft size={18} />
       </button>
       
       {getPageNumbers().map((p, i) => (
         p === '...' ? (
-          <span key={`ellipsis-${i}`} className="pagination-ellipsis" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', color: 'var(--text-secondary)' }}>...</span>
+          <span key={`ellipsis-${i}`} className="pagination-ellipsis">...</span>
         ) : (
           <button 
             key={p}
             className={`pagination-btn ${currentPage === p ? 'active' : ''}`}
             onClick={() => onPageChange(p)}
-            style={{ 
-              display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '8px', 
-              border: currentPage === p ? '1px solid var(--accent-blue)' : '1px solid var(--border-light)', 
-              backgroundColor: currentPage === p ? 'var(--accent-blue)' : 'var(--bg-input)', 
-              color: currentPage === p ? 'white' : 'var(--text-primary)',
-              fontWeight: currentPage === p ? '600' : '400',
-              cursor: 'pointer'
-            }}
           >
             {p}
           </button>
@@ -96,7 +72,6 @@ const PaginationControl = ({ currentPage, totalPages, onPageChange }) => {
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage >= totalPages}
         title="Halaman Selanjutnya"
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '8px', border: '1px solid var(--border-light)', backgroundColor: currentPage >= totalPages ? 'var(--bg-main)' : 'var(--bg-input)', cursor: currentPage >= totalPages ? 'not-allowed' : 'pointer', color: 'var(--text-secondary)' }}
       >
         <ChevronRight size={18} />
       </button>

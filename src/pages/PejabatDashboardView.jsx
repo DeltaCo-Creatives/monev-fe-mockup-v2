@@ -293,7 +293,7 @@ const PejabatDashboardView = ({ categoriesData, schoolsData }) => {
                 <tbody>
                   {paginatedTableData.length > 0 ? (
                     paginatedTableData.map(school => (
-                      <tr key={school.id} onClick={() => navigate(`school/${school.npsn}`)} className="clickable-row">
+                      <tr key={school.id} onClick={() => setTimeout(() => navigate(`school/${school.npsn}`), 150)} className="clickable-row">
                         <td className="font-mono">{school.npsn}</td>
                         <td className="fw-bold">{school.nama}</td>
                         <td>{school.kabupaten}, {school.provinsi}</td>
