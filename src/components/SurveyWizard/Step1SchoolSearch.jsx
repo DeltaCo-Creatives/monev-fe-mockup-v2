@@ -1,31 +1,10 @@
 import React, { useState, useMemo, startTransition } from 'react';
-import { Search, MapPin, Building, ChevronRight } from 'lucide-react';
+import { Search, MapPin, ChevronRight, Loader2 } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { Loader2 } from 'lucide-react';
 import SearchWorker from '../../workers/schoolSearchWorker?worker';
+import PaginationControl from '../PaginationControl';
 import './Step1SchoolSearch.css';
-
-const MemoizedSchoolCard = React.memo(({ school, isSelected, onClick }) => (
-  <div 
-    className={`school-card ${isSelected ? 'selected' : ''}`}
-    onClick={(e) => onClick(e, school)}
-  >
-    <div className="school-card-icon">
-      <Building size={24} />
-    </div>
-    <div className="school-card-info">
-      <h4>{school['Nama Satuan Pendidikan']}</h4>
-      <div className="school-meta">
-        <span className="badge">NPSN: {school['NPSN']}</span>
-        <span className="text-secondary">{school['Kab/Kota']}, {school['Provinsi']}</span>
-      </div>
-    </div>
-    <div className="school-card-action">
-      <div className="radio-circle"></div>
-    </div>
-  </div>
-));
 
 const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -37,14 +16,14 @@ const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
   const [allCities, setAllCities] = useState([]);
   const [citiesByRegion, setCitiesByRegion] = useState({});
   const [filteredSchools, setFilteredSchools] = useState([]);
-  
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // 10 is usually better for tables than 8
+
   const workerRef = React.useRef(null);
 
   React.useEffect(() => {
-    // Initialize the Web Worker!
     workerRef.current = new SearchWorker();
     
-    // Listen for messages from the Worker
     workerRef.current.onmessage = (e) => {
       const { type, payload } = e.data;
       if (type === 'DATA_LOADED') {
@@ -55,41 +34,36 @@ const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
       } else if (type === 'SEARCH_RESULTS') {
         startTransition(() => {
           setFilteredSchools(payload);
+          setCurrentPage(1);
           setIsSearching(false);
         });
       }
     };
 
-    // Delay initialization slightly to let CSS entrance animations finish smoothly
     const timer = setTimeout(() => {
       workerRef.current.postMessage({ type: 'INIT' });
     }, 400);
 
     return () => {
       clearTimeout(timer);
-      workerRef.current?.terminate(); // Cleanup worker on unmount
+      workerRef.current?.terminate();
     };
   }, []);
 
-  // Separate debounced state so the input stays snappy
-  // and GSAP only fires 300ms AFTER the user stops typing
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const debounceTimer = React.useRef(null);
 
   const handleSearchChange = (e) => {
     const val = e.target.value;
-    setSearchTerm(val); // Instant: keeps the input visually responsive
+    setSearchTerm(val);
     clearTimeout(debounceTimer.current);
     debounceTimer.current = setTimeout(() => {
-      // startTransition: tells React this re-render is non-urgent.
-      // React will prioritize input events over this state update.
       startTransition(() => setDebouncedSearch(val));
     }, 250);
   };
 
   React.useEffect(() => () => clearTimeout(debounceTimer.current), []);
 
-  // Instant lookup from our precomputed map (now populated by worker)
   const cities = useMemo(() => {
     if (regionFilter) {
       return citiesByRegion[regionFilter] ? [...citiesByRegion[regionFilter]].sort() : [];
@@ -99,10 +73,9 @@ const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
 
   const handleRegionChange = (e) => {
     setRegionFilter(e.target.value);
-    setCityFilter(''); // reset city when region changes
+    setCityFilter('');
   };
 
-  // Ask the Web Worker to search in the background thread!
   React.useEffect(() => {
     if (isDataLoaded && workerRef.current) {
       setIsSearching(true);
@@ -117,14 +90,18 @@ const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
     }
   }, [debouncedSearch, regionFilter, cityFilter, isDataLoaded]);
 
-  const containerRef = React.useRef(null);
+  const totalPages = Math.ceil(filteredSchools.length / itemsPerPage);
+  const paginatedSchools = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredSchools.slice(start, start + itemsPerPage);
+  }, [filteredSchools, currentPage]);
 
-  // Animate list only when DEBOUNCED search/filter changes — not on every keystroke
+  const tbodyRef = React.useRef(null);
+
   useGSAP(() => {
-    const cards = containerRef.current?.querySelectorAll('.school-card');
-    if (!cards || cards.length === 0) return;
-    const visible = Array.from(cards).slice(0, 8);
-    gsap.fromTo(visible, 
+    const rows = tbodyRef.current?.querySelectorAll('tr.school-row');
+    if (!rows || rows.length === 0) return;
+    gsap.fromTo(Array.from(rows), 
       { y: 12, opacity: 0 },
       {
         y: 0,
@@ -135,109 +112,160 @@ const Step1SchoolSearch = ({ selectedSchool, setSelectedSchool, onNext }) => {
         clearProps: "transform,opacity"
       }
     );
-  }, { scope: containerRef, dependencies: [debouncedSearch, regionFilter, cityFilter] });
+  }, { scope: tbodyRef, dependencies: [paginatedSchools] });
 
-  // Use useCallback so the function reference stays identical across renders.
-  // This is required for React.memo on the child cards to work properly.
   const handleSchoolClick = React.useCallback((e, school) => {
     gsap.fromTo(e.currentTarget, 
-      { scale: 0.96 }, 
-      { scale: 1, duration: 0.3, ease: "back.out(1.5)", clearProps: "transform" }
+      { backgroundColor: 'rgba(59, 130, 246, 0.2)' }, 
+      { backgroundColor: 'rgba(59, 130, 246, 0.05)', duration: 0.3, clearProps: "backgroundColor" }
     );
     setSelectedSchool(school);
   }, [setSelectedSchool]);
 
-  const renderedSchools = useMemo(() => {
-    if (!isDataLoaded) {
-      return (
-        <div className="empty-results" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', padding: '3rem 0' }}>
-          <Loader2 className="spinner" size={32} style={{ animation: 'spin 1s linear infinite' }} />
-          <p>Memuat database sekolah...</p>
-        </div>
-      );
-    }
-
-    if (isSearching) {
-      return (
-        <div className="empty-results" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', padding: '3rem 0' }}>
-          <Loader2 className="spinner" size={24} style={{ animation: 'spin 1s linear infinite' }} />
-          <p>Mencari sekolah...</p>
-        </div>
-      );
-    }
-    
-    return filteredSchools.length > 0 ? (
-      filteredSchools.map((school) => (
-        <MemoizedSchoolCard 
-          key={school.NPSN} 
-          school={school}
-          isSelected={selectedSchool?.NPSN === school.NPSN}
-          onClick={handleSchoolClick}
-        />
-      ))
-    ) : (
-      <div className="empty-results">
-        <p>Tidak ada sekolah yang cocok dengan pencarian Anda.</p>
-      </div>
-    );
-  }, [filteredSchools, selectedSchool?.NPSN, isDataLoaded]);
-
-
   return (
-    <div className="wizard-step-card gsap-slide-up glass" ref={containerRef}>
-      <div className="step-header">
-        <h2>Cari & Pilih Sekolah</h2>
-        <p>Silakan cari sekolah yang akan Anda survei hari ini berdasarkan NPSN, Nama, atau Wilayah.</p>
-      </div>
-
-      <div className="search-controls">
-        <div className="search-input-wrapper">
-          <Search size={18} className="search-icon" />
-          <input 
-            type="text" 
-            placeholder="Ketik NPSN atau Nama Sekolah..." 
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className="search-input"
-          />
+    <div className="wizard-step-card gsap-slide-up glass" style={{ padding: '0', overflow: 'hidden' }}>
+      
+      {/* Verval-style compact header */}
+      <div className="grid-header" style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-light)', display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="header-title">
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Pilih Sekolah Sasaran</h2>
         </div>
-        <div className="filters-container">
-          <div className="filter-wrapper">
-            <MapPin size={18} className="filter-icon" />
+
+        <div className="grid-search" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', flex: '1 1 auto', justifyContent: 'flex-end' }}>
+          
+          <div style={{ position: 'relative', width: '250px' }}>
+            <MapPin size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
             <select 
               value={regionFilter}
               onChange={handleRegionChange}
-              className="filter-select"
+              style={{ width: '100%', padding: '0.6rem 2rem 0.6rem 2.5rem', borderRadius: '50px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', cursor: 'pointer', fontSize: '0.9rem', appearance: 'none' }}
             >
               <option value="">Semua Provinsi</option>
               {regions.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
           </div>
-          <div className="filter-wrapper">
-            <MapPin size={18} className="filter-icon" />
+
+          <div style={{ position: 'relative', width: '250px' }}>
+            <MapPin size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
             <select 
               value={cityFilter}
               onChange={(e) => setCityFilter(e.target.value)}
-              className="filter-select"
-              disabled={!regionFilter && cities.length > 100} // Optional UX enhancement
+              disabled={!regionFilter && cities.length > 100}
+              style={{ width: '100%', padding: '0.6rem 2rem 0.6rem 2.5rem', borderRadius: '50px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', cursor: 'pointer', fontSize: '0.9rem', appearance: 'none' }}
             >
               <option value="">Semua Kab/Kota</option>
               {cities.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
+
+          <div style={{ position: 'relative', width: '300px' }}>
+            <Search size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+            <input 
+              type="text" 
+              placeholder="Cari NPSN atau Nama..." 
+              value={searchTerm}
+              onChange={handleSearchChange}
+              style={{ width: '100%', padding: '0.6rem 1rem 0.6rem 2.5rem', borderRadius: '50px', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-input)', outline: 'none', fontSize: '0.9rem' }}
+            />
+          </div>
         </div>
       </div>
 
-
-      <div className="school-results">
-        {renderedSchools}
+      <div className="table-responsive" style={{ minHeight: '300px' }}>
+        <table className="premium-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr>
+              <th style={{ padding: '1rem 1.5rem', textAlign: 'left', borderBottom: '2px solid var(--border-light)', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>NPSN</th>
+              <th style={{ padding: '1rem 1.5rem', textAlign: 'left', borderBottom: '2px solid var(--border-light)', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Nama Sekolah</th>
+              <th style={{ padding: '1rem 1.5rem', textAlign: 'left', borderBottom: '2px solid var(--border-light)', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Lokasi</th>
+              <th style={{ padding: '1rem 1.5rem', textAlign: 'center', borderBottom: '2px solid var(--border-light)', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', width: '100px' }}>Pilih</th>
+            </tr>
+          </thead>
+          <tbody ref={tbodyRef}>
+            {!isDataLoaded ? (
+              <tr>
+                <td colSpan="4" style={{ textAlign: 'center', padding: '3rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: 'var(--text-secondary)' }}>
+                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
+                    <span>Memuat database sekolah...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : isSearching ? (
+              <tr>
+                <td colSpan="4" style={{ textAlign: 'center', padding: '3rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: 'var(--text-secondary)' }}>
+                    <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} />
+                    <span>Mencari sekolah...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : paginatedSchools.length > 0 ? (
+              paginatedSchools.map((school) => {
+                const isSelected = selectedSchool?.NPSN === school.NPSN;
+                return (
+                  <tr 
+                    key={school.NPSN}
+                    className={`school-row ${isSelected ? 'selected-row' : ''}`}
+                    onClick={(e) => handleSchoolClick(e, school)}
+                    style={{ 
+                      cursor: 'pointer', 
+                      transition: 'background-color 0.2s',
+                      backgroundColor: isSelected ? 'rgba(59, 130, 246, 0.05)' : 'transparent',
+                      borderBottom: '1px solid var(--border-light)'
+                    }}
+                  >
+                    <td style={{ padding: '1.25rem 1.5rem', color: 'var(--accent-blue)', fontWeight: 600, fontFamily: 'monospace', fontSize: '0.95rem' }}>
+                      {school.NPSN}
+                    </td>
+                    <td style={{ padding: '1.25rem 1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                      {school['Nama Satuan Pendidikan']}
+                    </td>
+                    <td style={{ padding: '1.25rem 1.5rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                      {school['Kab/Kota']},<br/>{school.Provinsi}
+                    </td>
+                    <td style={{ padding: '1.25rem 1.5rem', textAlign: 'center' }}>
+                      <div style={{ 
+                        width: '20px', 
+                        height: '20px', 
+                        borderRadius: '50%', 
+                        border: `2px solid ${isSelected ? 'var(--accent-blue)' : 'var(--border-light)'}`,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        margin: '0 auto'
+                      }}>
+                        {isSelected && <div style={{ width: '10px', height: '10px', backgroundColor: 'var(--accent-blue)', borderRadius: '50%' }} />}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan="4" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
+                  Tidak ada sekolah yang cocok dengan pencarian Anda.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
-      <div className="wizard-actions" style={{ justifyContent: 'flex-end' }}>
+      {filteredSchools.length > 0 && (
+        <PaginationControl 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
+
+      <div className="wizard-actions" style={{ padding: '1.5rem', display: 'flex', justifyContent: 'flex-end', backgroundColor: 'var(--bg-main)', borderTop: '1px solid var(--border-light)', margin: 0 }}>
         <button 
           className="btn-primary" 
           disabled={!selectedSchool} 
           onClick={onNext}
+          style={{ padding: '0.75rem 2rem', borderRadius: '50px' }} // Pill shape button
         >
           Lanjut Pilih Kategori <ChevronRight size={18} />
         </button>

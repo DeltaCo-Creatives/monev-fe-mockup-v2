@@ -1,215 +1,26 @@
-.step-header {
-  margin-bottom: 2rem;
+/* Step1SchoolSearch.css */
+
+.school-row:hover {
+  background-color: var(--bg-card-hover) !important;
 }
 
-.step-header h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
+.school-row.selected-row {
+  background-color: rgba(59, 130, 246, 0.05) !important;
 }
 
-.step-header p {
-  color: var(--text-secondary);
-  font-size: 1rem;
-}
-
-.search-controls {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
-.search-input-wrapper {
-  flex: 1 1 300px;
-  min-width: 250px;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.search-icon {
-  position: absolute;
-  left: 1rem;
-  color: var(--text-secondary);
-}
-
-.search-input {
-  width: 100%;
-  padding: 1rem 1rem 1rem 3rem;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  background-color: var(--bg-input);
-  color: var(--text-primary);
-  font-size: 1rem;
-  transition: all 0.2s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px var(--accent-blue-light);
-}
-
-.filters-container {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  flex: 1 1 auto;
-}
-
-.filter-wrapper {
-  flex: 1 1 180px;
-  min-width: 150px;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.filter-icon {
-  position: absolute;
-  left: 1rem;
-  color: var(--text-secondary);
-  pointer-events: none;
-}
-
-.filter-select {
-  width: 100%;
-  padding: 1rem 2.5rem 1rem 3rem;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  background-color: var(--bg-input);
-  color: var(--text-primary);
-  font-size: 1rem;
-  cursor: pointer;
+/* Make sure the select dropdown arrows look nice */
+select {
   -webkit-appearance: none;
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 1rem center;
-  background-size: 1em;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  background-size: 1.2em;
 }
 
-.filter-select:focus {
+/* Ensure inputs glow on focus */
+input:focus, select:focus {
   outline: none;
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px var(--accent-blue-light);
-}
-
-.school-results {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  max-height: 400px;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-}
-
-.school-card {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 1.25rem;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  background-color: var(--bg-main);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.school-card:hover {
-  border-color: var(--accent-blue);
-  background-color: var(--bg-card-hover);
-}
-
-.school-card.selected {
-  border-color: var(--accent-blue);
-  background-color: rgba(59, 130, 246, 0.05);
-}
-
-.school-card-icon {
-  background-color: var(--bg-input);
-  color: var(--accent-blue);
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.school-card.selected .school-card-icon {
-  background-color: var(--accent-blue);
-  color: white;
-}
-
-.school-card-info {
-  flex: 1;
-}
-
-.school-card-info h4 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-}
-
-.school-meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.badge {
-  background-color: var(--bg-input);
-  border: 1px solid var(--border-light);
-  color: var(--text-secondary);
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-family: monospace;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.radio-circle {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid var(--border-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.school-card.selected .radio-circle {
-  border-color: var(--accent-blue);
-}
-
-.school-card.selected .radio-circle::after {
-  content: '';
-  width: 10px;
-  height: 10px;
-  background-color: var(--accent-blue);
-  border-radius: 50%;
-}
-
-.empty-results {
-  text-align: center;
-  padding: 3rem;
-  color: var(--text-secondary);
-  background-color: var(--bg-input);
-  border-radius: var(--radius-md);
-}
-
-@media (max-width: 768px) {
-  .search-controls {
-    flex-direction: column;
-  }
+  border-color: var(--accent-blue) !important;
+  box-shadow: 0 0 0 3px var(--accent-blue-light) !important;
 }
